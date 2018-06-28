@@ -1,5 +1,8 @@
 package com.pickyourcpu.crawler;
 
+import com.pickyourcpu.dto.Item;
+import org.springframework.stereotype.Service;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -11,15 +14,32 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Crawler {
+@Service
+public class Crawler implements Runnable {
+
+    private volatile boolean flag = false;
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag( boolean flag ) {
+        this.flag = flag;
+    }
+
+    public void stopCrawling() {
+        this.flag = false;
+    }
 
     private Crawler() {
     }
 
-    public static void parseHTML( String filePath, String uri ) {
+    public void parseHTML( String filePath, String uri ) {
         try ( FileOutputStream fos = new FileOutputStream( filePath ) ) {
 
             URL url = new URL( uri );
@@ -32,7 +52,7 @@ public class Crawler {
             String line;
             Writer writer = new BufferedWriter( new OutputStreamWriter( fos, "UTF-8" ) );
 
-            while ( (line = br.readLine()) != null ) {
+            while ( (line = br.readLine()) != null && flag ) {
                 if ( line.contains( "<link" ) || line.contains( "<meta" ) ) {
                     continue;
                 }
@@ -61,7 +81,7 @@ public class Crawler {
 
     }
 
-    public static String preProcess( String line ) {
+    public String preProcess( String line ) {
         StringBuffer sb = new StringBuffer( line.length() );
 
         Pattern imgPattern = Pattern.compile( "(<img.*?)(>)" );
@@ -76,12 +96,13 @@ public class Crawler {
         return sb.toString();
     }
 
-    public static void parseFile( String filePath ) {
+    public List<Item> parseFile( String filePath ) {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty( XMLInputFactory.IS_VALIDATING, false );
         factory.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false );
 
         XMLEventReader reader = null;
+        List<Item> list = new ArrayList<>();
 
         try ( FileInputStream fis = new FileInputStream( filePath ) ) {
             reader = factory.createXMLEventReader( new InputStreamReader( fis, "UTF-8" ) );
@@ -89,7 +110,7 @@ public class Crawler {
             boolean inProductTag = false;
             boolean inProductNameTag = false;
 
-            while ( reader.hasNext() ) {
+            while ( reader.hasNext() && flag ) {
                 XMLEvent event = reader.nextEvent();
 
                 if ( event.isStartElement() ) {
@@ -109,7 +130,9 @@ public class Crawler {
                     }
 
                     if ( inProductNameTag && inProductTag && element.getName().toString().equals( "a" ) ) {
-                        System.out.println( reader.getElementText().split( "@" )[0] );
+                        Item item = new Item();
+                        item.setName( reader.getElementText().split( "@" )[0] );
+                        list.add( item );
                         inProductNameTag = false;
                         inProductNameTag = false;
                     }
@@ -122,6 +145,30 @@ public class Crawler {
             e.printStackTrace();
         } finally {
 
+        }
+        return list;
+    }
+
+    public void writeFile( String filePath, List<Item> list ) {
+        try ( FileWriter writer = new FileWriter( filePath ) ) {
+            for ( Item item : list ) {
+                writer.write( item.getName() );
+            }
+            writer.close();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void run() {
+        this.flag = true;
+
+        while ( flag ) {
+            parseHTML( "src/main/xml/data.xml", "https://www.cpubenchmark.net/high_end_cpus.html" );
+            List<Item> list = parseFile( "src/main/xml/data.xml" );
+            writeFile( "src/main/xml/output/processed.xml", list);
+            this.flag = false;
         }
     }
 }
