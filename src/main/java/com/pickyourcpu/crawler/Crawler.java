@@ -2,6 +2,7 @@ package com.pickyourcpu.crawler;
 
 import com.pickyourcpu.entity.Product;
 import com.pickyourcpu.enu.URLEnum;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
 import javax.xml.namespace.QName;
@@ -12,6 +13,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class Crawler implements Runnable {
 
     private volatile boolean flag = false;
+
 
     public boolean isFlag() {
         return flag;
@@ -45,7 +48,7 @@ public class Crawler implements Runnable {
     public String selfClosingTag( String str, String tag ) {
         StringBuffer sb = new StringBuffer();
 
-        Pattern imgPattern = Pattern.compile( "(<" + tag + ".*?)(>)" );
+        Pattern imgPattern = Pattern.compile( "(<" + tag + ".*?)>" );
         Matcher imgMatcher = imgPattern.matcher( str );
 
         while ( imgMatcher.find() ) {
@@ -90,11 +93,11 @@ public class Crawler implements Runnable {
 
     public InputStream preProcessMainWebsiteDetail( String rawString ) {
         //get necessary part of html
-        Pattern startPattern = Pattern.compile( "(<table.*?class=\"desc\".*?)(>)" );
+        Pattern startPattern = Pattern.compile( "(<table.*?class=\"desc\".*?)>" );
         Matcher startMatcher = startPattern.matcher( rawString );
         startMatcher.find();
         int start = startMatcher.start();
-        Pattern endPattern = Pattern.compile( "(<table.*?class=\"price\".*?)(>)" );
+        Pattern endPattern = Pattern.compile( "(<table.*?class=\"price\".*?)>" );
         Matcher endMatcher = endPattern.matcher( rawString );
         endMatcher.find();
         int end = endMatcher.start();
@@ -166,6 +169,29 @@ public class Crawler implements Runnable {
         return list;
     }
 
+    public String readElementBody( XMLEventReader reader ) {
+        StringWriter writer = new StringWriter();
+        int depth = 0;
+
+        try {
+            while ( reader.hasNext() ) {
+                XMLEvent event = reader.nextEvent();
+
+                if ( event.isStartElement() ) depth++;
+                if ( event.isEndElement() ) {
+                    depth--;
+                    if ( depth < 0 ) break;
+                }
+
+                event.writeAsEncodedUnicode( writer );
+            }
+        } catch ( XMLStreamException e ) {
+            e.printStackTrace();
+        }
+
+        return writer.getBuffer().toString();
+    }
+
     public Product parseMainWebsiteDetail( InputStream is ) {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty( XMLInputFactory.IS_VALIDATING, false );
@@ -188,12 +214,44 @@ public class Crawler implements Runnable {
                     if ( element.getName().toString().equals( "span" ) ) {
                         Attribute spanAttr = element.getAttributeByName( new QName( "class" ) );
                         if ( spanAttr != null ) {
-                            product.setName( reader.getElementText() );
+                            product.setName( reader.getElementText().trim() );
                         }
                     }
 
                     if ( element.getName().toString().equals( "em" ) && emCount == 0 ) {
-//                        System.out.println( element.get );
+                        String fragment = readElementBody( reader );
+
+                        Pattern socketPattern = Pattern.compile( "<strong>Socket:</strong>(.*?)<br></br>" );
+                        Matcher socketMatcher = socketPattern.matcher( fragment );
+                        Pattern clockspeedPattern = Pattern.compile( "<strong>Clockspeed:</strong>(.*?)GHz<br></br>" );
+                        Matcher clockspeedMatcher = clockspeedPattern.matcher( fragment );
+                        Pattern turbospeedPattern = Pattern.compile( "<strong>Turbo Speed:</strong>(.*?)GHz<br></br>" );
+                        Matcher turbospeedMatcher = turbospeedPattern.matcher( fragment );
+                        Pattern noOfCoresPattern = Pattern.compile( "<strong>No of Cores:</strong>(.*?)<br></br>" );
+                        Matcher noOfCoresMatcher = noOfCoresPattern.matcher( fragment );
+                        Pattern TDPPattern = Pattern.compile( "<strong>Typical TDP:</strong>(.*?)W<br></br>" );
+                        Matcher TDPMatcher = TDPPattern.matcher( fragment );
+                        Pattern descriptionPattern = Pattern.compile( "<div.*?><strong>Description:</strong>(.*?)</div>" );
+                        Matcher descriptionMatcher = descriptionPattern.matcher( fragment );
+
+                        if ( socketMatcher.find() ) {
+                            product.setSocket( socketMatcher.group( 1 ).trim() );
+                        }
+                        if ( clockspeedMatcher.find() ) {
+                            product.setClockspeed( NumberUtils.toDouble( clockspeedMatcher.group( 1 ).trim() ) );
+                        }
+                        if ( turbospeedMatcher.find() ) {
+                            product.setTurbospeed( NumberUtils.toDouble( turbospeedMatcher.group( 1 ).trim() ) );
+                        }
+                        if ( TDPMatcher.find() ) {
+                            product.setTDP( new BigInteger( TDPMatcher.group( 1 ).trim() ) );
+                        }
+                        if ( noOfCoresMatcher.find() ) {
+                            product.setNoOfCores( noOfCoresMatcher.group( 1 ).trim() );
+                        }
+                        if ( descriptionMatcher.find() ) {
+                            product.setDescription( descriptionMatcher.group( 1 ).trim() );
+                        }
                         emCount++;
                     }
                 }
@@ -204,6 +262,7 @@ public class Crawler implements Runnable {
         } catch ( UnsupportedEncodingException e ) {
             e.printStackTrace();
         }
+        System.out.println(product);
         return product;
     }
 

@@ -34,6 +34,8 @@ public class Product {
     @XmlSchemaType( name = "positiveInteger" )
     private BigInteger TDP;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products" )
+    private String noOfCores;
+    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products" )
     private String description;
 
     public Product() {
@@ -103,6 +105,14 @@ public class Product {
         this.description = description;
     }
 
+    public String getNoOfCores() {
+        return noOfCores;
+    }
+
+    public void setNoOfCores( String noOfCores ) {
+        this.noOfCores = noOfCores;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -113,6 +123,7 @@ public class Product {
                 ", clockspeed=" + clockspeed +
                 ", turbospeed=" + turbospeed +
                 ", TDP=" + TDP +
+                ", noOfCores='" + noOfCores + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
