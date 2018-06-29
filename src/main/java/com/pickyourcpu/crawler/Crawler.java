@@ -1,6 +1,7 @@
 package com.pickyourcpu.crawler;
 
-import com.pickyourcpu.dto.Item;
+import com.pickyourcpu.entity.Product;
+import com.pickyourcpu.enu.URLEnum;
 import org.springframework.stereotype.Service;
 
 import javax.xml.namespace.QName;
@@ -14,10 +15,12 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class Crawler implements Runnable {
@@ -39,53 +42,11 @@ public class Crawler implements Runnable {
     private Crawler() {
     }
 
-    public void parseHTML( String filePath, String uri ) {
-        try ( FileOutputStream fos = new FileOutputStream( filePath ) ) {
+    public String selfClosingTag( String str, String tag ) {
+        StringBuffer sb = new StringBuffer();
 
-            URL url = new URL( uri );
-            URLConnection con = url.openConnection();
-            con.addRequestProperty( "User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36" );
-
-            InputStream is = con.getInputStream();
-            BufferedReader br = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
-
-            String line;
-            Writer writer = new BufferedWriter( new OutputStreamWriter( fos, "UTF-8" ) );
-
-            while ( (line = br.readLine()) != null && flag ) {
-                if ( line.contains( "<link" ) || line.contains( "<meta" ) ) {
-                    continue;
-                }
-                if ( line.contains( "<br>" ) ) {
-                    line = line.replaceAll( "<br>", "" );
-                }
-                if ( line.contains( "<BR>" ) ) {
-                    line = line.replaceAll( "<BR>", "" );
-                }
-                if ( line.contains( " async " ) ) {
-                    line = line.replaceAll( " async ", " " );
-                }
-
-                line = preProcess( line );
-
-                writer.write( line + "\n" );
-            }
-            br.close();
-            writer.close();
-
-        } catch ( MalformedURLException e ) {
-            e.printStackTrace();
-        } catch ( IOException e ) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public String preProcess( String line ) {
-        StringBuffer sb = new StringBuffer( line.length() );
-
-        Pattern imgPattern = Pattern.compile( "(<img.*?)(>)" );
-        Matcher imgMatcher = imgPattern.matcher( line );
+        Pattern imgPattern = Pattern.compile( "(<" + tag + ".*?)(>)" );
+        Matcher imgMatcher = imgPattern.matcher( str );
 
         while ( imgMatcher.find() ) {
             if ( imgMatcher.group().endsWith( "/>" ) ) continue;
@@ -96,21 +57,75 @@ public class Crawler implements Runnable {
         return sb.toString();
     }
 
-    public List<Item> parseFile( String filePath ) {
+    public String URIResolver( String uri ) {
+        try {
+            URL url = new URL( uri );
+            URLConnection con = url.openConnection();
+            con.addRequestProperty( "User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, " +
+                    "like Gecko) Chrome/67.0.3396.87 Safari/537.36" );
+
+            return new BufferedReader( new InputStreamReader( con.getInputStream() ) )
+                    .lines().collect( Collectors.joining( "\n" ) );
+        } catch ( MalformedURLException e ) {
+            e.printStackTrace();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public InputStream preProcessMainWebsite( String rawString ) {
+        //get necessary part of html
+        int start = rawString.indexOf( "<div id=\"mark\"" );
+        int end = rawString.indexOf( "<div id=\"value\"" );
+        rawString = rawString.substring( start, end );
+        //end
+
+        //replace tags which leading exception
+        rawString = rawString.replaceAll( "<br>", "" )
+                .replaceAll( "<BR>", "" );
+        //end
+        return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
+    }
+
+    public InputStream preProcessMainWebsiteDetail( String rawString ) {
+        //get necessary part of html
+        Pattern startPattern = Pattern.compile( "(<table.*?class=\"desc\".*?)(>)" );
+        Matcher startMatcher = startPattern.matcher( rawString );
+        startMatcher.find();
+        int start = startMatcher.start();
+        Pattern endPattern = Pattern.compile( "(<table.*?class=\"price\".*?)(>)" );
+        Matcher endMatcher = endPattern.matcher( rawString );
+        endMatcher.find();
+        int end = endMatcher.start();
+        rawString = rawString.substring( start, end );
+        //end
+
+        //replace tags which leading exception
+        Pattern p = Pattern.compile( "[^\\u0009\\u000A\\u000D\u0020-\\uD7FF\\uE000-\\uFFFD\\u10000-\\u10FFF]+" );
+        rawString = p.matcher( rawString ).replaceAll( "" );
+        rawString = rawString.replaceAll( "<br>", "" )
+                .replaceAll( "<BR>", "" )
+                .replaceAll( " & ", " &amp; " );
+        //end
+        return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
+    }
+
+    public List<Product> parseMainWebsite( InputStream is ) {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty( XMLInputFactory.IS_VALIDATING, false );
         factory.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false );
 
-        XMLEventReader reader = null;
-        List<Item> list = new ArrayList<>();
+        XMLEventReader reader;
+        List<Product> list = new ArrayList<>();
 
-        try ( FileInputStream fis = new FileInputStream( filePath ) ) {
-            reader = factory.createXMLEventReader( new InputStreamReader( fis, "UTF-8" ) );
+        try {
+            reader = factory.createXMLEventReader( new InputStreamReader( is, "UTF-8" ) );
 
             boolean inProductTag = false;
             boolean inProductNameTag = false;
 
-            while ( reader.hasNext() && flag ) {
+            while ( reader.hasNext() ) {
                 XMLEvent event = reader.nextEvent();
 
                 if ( event.isStartElement() ) {
@@ -121,54 +136,86 @@ public class Crawler implements Runnable {
                     }
 
                     if ( element.getName().toString().equals( "td" ) ) {
-                        Attribute attr = element.getAttributeByName( new QName( "id" ) );
-                        if ( attr != null ) {
-                            if ( attr.getValue().contains( "rk" ) ) {
-                                inProductNameTag = true;
-                            }
+                        Attribute attrId = element.getAttributeByName( new QName( "id" ) );
+                        if ( attrId != null && attrId.getValue().contains( "rk" ) ) {
+                            inProductNameTag = true;
                         }
                     }
 
                     if ( inProductNameTag && inProductTag && element.getName().toString().equals( "a" ) ) {
-                        Item item = new Item();
-                        item.setName( reader.getElementText().split( "@" )[0] );
-                        list.add( item );
-                        inProductNameTag = false;
+                        //detail start here
+                        Attribute attrHref = element.getAttributeByName( new QName( "href" ) );
+                        if ( attrHref != null ) {
+                            String detailUrl = URLEnum.MAIN_WEBSITE_HOST.getUrl() + "/" + attrHref.getValue();
+                            String htmlDetail = URIResolver( detailUrl );
+                            InputStream isDetail = preProcessMainWebsiteDetail( htmlDetail );
+                            Product product = parseMainWebsiteDetail( isDetail );
+                        }
+                        //end
+                        inProductTag = false;
                         inProductNameTag = false;
                     }
                 }
             }
 
-        } catch ( IOException e ) {
-            e.printStackTrace();
         } catch ( XMLStreamException e ) {
             e.printStackTrace();
-        } finally {
-
+        } catch ( UnsupportedEncodingException e ) {
+            e.printStackTrace();
         }
         return list;
     }
 
-    public void writeFile( String filePath, List<Item> list ) {
-        try ( FileWriter writer = new FileWriter( filePath ) ) {
-            for ( Item item : list ) {
-                writer.write( item.getName() );
+    public Product parseMainWebsiteDetail( InputStream is ) {
+        XMLInputFactory factory = XMLInputFactory.newFactory();
+        factory.setProperty( XMLInputFactory.IS_VALIDATING, false );
+        factory.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false );
+
+        XMLEventReader reader;
+        Product product = new Product();
+
+        try {
+            reader = factory.createXMLEventReader( new InputStreamReader( is, "UTF-8" ) );
+
+            int emCount = 0;
+
+            while ( reader.hasNext() ) {
+                XMLEvent event = reader.nextEvent();
+
+                if ( event.isStartElement() ) {
+                    StartElement element = (StartElement) event;
+
+                    if ( element.getName().toString().equals( "span" ) ) {
+                        Attribute spanAttr = element.getAttributeByName( new QName( "class" ) );
+                        if ( spanAttr != null ) {
+                            product.setName( reader.getElementText() );
+                        }
+                    }
+
+                    if ( element.getName().toString().equals( "em" ) && emCount == 0 ) {
+//                        System.out.println( element.get );
+                        emCount++;
+                    }
+                }
             }
-            writer.close();
-        } catch ( IOException e ) {
+
+        } catch ( XMLStreamException e ) {
+            e.printStackTrace();
+        } catch ( UnsupportedEncodingException e ) {
             e.printStackTrace();
         }
+        return product;
+    }
+
+    public void start() {
+        String html = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
+        InputStream is = preProcessMainWebsite( html );
+        List<Product> list = parseMainWebsite( is );
+
     }
 
     @Override
     public void run() {
-        this.flag = true;
 
-        while ( flag ) {
-            parseHTML( "src/main/xml/data.xml", "https://www.cpubenchmark.net/high_end_cpus.html" );
-            List<Item> list = parseFile( "src/main/xml/data.xml" );
-            writeFile( "src/main/xml/output/processed.xml", list);
-            this.flag = false;
-        }
     }
 }

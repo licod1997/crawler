@@ -15,12 +15,22 @@ public class CrawlController {
     private Thread thread;
 
     @GetMapping( value = "/bat-dau-crawl" )
-    public ResponseEntity crawlStart() {
-        if (thread == null) {
-            thread = new Thread( crawler );
+    public String crawlStart() {
+        if ( thread != null && !thread.isAlive() ) {
+            thread.start();
         }
-        thread.start();
-        return ResponseEntity.ok( "Crawler is starting" );
+        return "crawl";
     }
 
+    @GetMapping( value = "/kiem-tra-thread" )
+    public ResponseEntity checkThread() {
+        if ( thread != null && thread.isAlive() ) return ResponseEntity.ok( "Running" );
+        return ResponseEntity.ok( "Stopped" );
+    }
+
+    @GetMapping( value = "/crawl" )
+    public ResponseEntity crawl() {
+        crawler.start();
+        return ResponseEntity.ok().build();
+    }
 }

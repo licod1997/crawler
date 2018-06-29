@@ -1,9 +1,15 @@
 package com.pickyourcpu.dto;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
-@XmlRootElement
+@XmlAccessorType( XmlAccessType.FIELD )
+@XmlType( name = "item", namespace = "http://something.com/schema/items", propOrder = {
+        "name"
+} )
+@XmlRootElement( name = "item", namespace = "http://something.com/schema/items" )
 public class Item {
+
+    @XmlElement( name = "name", namespace = "http://something.com/schema/items" )
     private String name;
 
     public Item() {
