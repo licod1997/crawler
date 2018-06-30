@@ -2,7 +2,9 @@ package com.pickyourcpu.crawler;
 
 import com.pickyourcpu.entity.Product;
 import com.pickyourcpu.enu.URLEnum;
+import com.pickyourcpu.repository.ProductRepository;
 import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.namespace.QName;
@@ -27,8 +29,14 @@ import java.util.stream.Collectors;
 @Service
 public class Crawler implements Runnable {
 
-    private volatile boolean flag = false;
+    private final ProductRepository productRepository;
 
+    @Autowired
+    public Crawler( ProductRepository productRepository ) {
+        this.productRepository = productRepository;
+    }
+
+    private volatile boolean flag = false;
 
     public boolean isFlag() {
         return flag;
@@ -40,9 +48,6 @@ public class Crawler implements Runnable {
 
     public void stopCrawling() {
         this.flag = false;
-    }
-
-    private Crawler() {
     }
 
     public String selfClosingTag( String str, String tag ) {
@@ -128,7 +133,7 @@ public class Crawler implements Runnable {
             boolean inProductTag = false;
             boolean inProductNameTag = false;
 
-            while ( reader.hasNext() ) {
+            while ( reader.hasNext() && flag ) {
                 XMLEvent event = reader.nextEvent();
 
                 if ( event.isStartElement() ) {
@@ -153,6 +158,7 @@ public class Crawler implements Runnable {
                             String htmlDetail = URIResolver( detailUrl );
                             InputStream isDetail = preProcessMainWebsiteDetail( htmlDetail );
                             Product product = parseMainWebsiteDetail( isDetail );
+                            list.add( product );
                         }
                         //end
                         inProductTag = false;
@@ -204,6 +210,12 @@ public class Crawler implements Runnable {
             reader = factory.createXMLEventReader( new InputStreamReader( is, "UTF-8" ) );
 
             int emCount = 0;
+            int trCount = 0;
+            int tdCount = 0;
+            int spanCount = 0;
+            boolean inTrBenchMark = false;
+            boolean inTdBenchMark = false;
+            boolean inSpanBenchMark = false;
 
             while ( reader.hasNext() ) {
                 XMLEvent event = reader.nextEvent();
@@ -218,41 +230,71 @@ public class Crawler implements Runnable {
                         }
                     }
 
-                    if ( element.getName().toString().equals( "em" ) && emCount == 0 ) {
-                        String fragment = readElementBody( reader );
+                    if ( element.getName().toString().equals( "em" ) ) {
+                        if ( emCount == 0 ) {
+                            String fragment = readElementBody( reader );
 
-                        Pattern socketPattern = Pattern.compile( "<strong>Socket:</strong>(.*?)<br></br>" );
-                        Matcher socketMatcher = socketPattern.matcher( fragment );
-                        Pattern clockspeedPattern = Pattern.compile( "<strong>Clockspeed:</strong>(.*?)GHz<br></br>" );
-                        Matcher clockspeedMatcher = clockspeedPattern.matcher( fragment );
-                        Pattern turbospeedPattern = Pattern.compile( "<strong>Turbo Speed:</strong>(.*?)GHz<br></br>" );
-                        Matcher turbospeedMatcher = turbospeedPattern.matcher( fragment );
-                        Pattern noOfCoresPattern = Pattern.compile( "<strong>No of Cores:</strong>(.*?)<br></br>" );
-                        Matcher noOfCoresMatcher = noOfCoresPattern.matcher( fragment );
-                        Pattern TDPPattern = Pattern.compile( "<strong>Typical TDP:</strong>(.*?)W<br></br>" );
-                        Matcher TDPMatcher = TDPPattern.matcher( fragment );
-                        Pattern descriptionPattern = Pattern.compile( "<div.*?><strong>Description:</strong>(.*?)</div>" );
-                        Matcher descriptionMatcher = descriptionPattern.matcher( fragment );
+                            Pattern socketPattern = Pattern.compile( "<strong>Socket:</strong>(.*?)<br></br>" );
+                            Matcher socketMatcher = socketPattern.matcher( fragment );
+                            Pattern clockspeedPattern = Pattern.compile( "<strong>Clockspeed:</strong>(.*?)GHz<br></br>" );
+                            Matcher clockspeedMatcher = clockspeedPattern.matcher( fragment );
+                            Pattern turbospeedPattern = Pattern.compile( "<strong>Turbo Speed:</strong>(.*?)GHz<br></br>" );
+                            Matcher turbospeedMatcher = turbospeedPattern.matcher( fragment );
+                            Pattern noOfCoresPattern = Pattern.compile( "<strong>No of Cores:</strong>(.*?)<br></br>" );
+                            Matcher noOfCoresMatcher = noOfCoresPattern.matcher( fragment );
+                            Pattern TDPPattern = Pattern.compile( "<strong>Typical TDP:</strong>(.*?)W<br></br>" );
+                            Matcher TDPMatcher = TDPPattern.matcher( fragment );
+                            Pattern descriptionPattern = Pattern.compile( "<div.*?><strong>Description:</strong>(.*?)</div>" );
+                            Matcher descriptionMatcher = descriptionPattern.matcher( fragment );
 
-                        if ( socketMatcher.find() ) {
-                            product.setSocket( socketMatcher.group( 1 ).trim() );
-                        }
-                        if ( clockspeedMatcher.find() ) {
-                            product.setClockspeed( NumberUtils.toDouble( clockspeedMatcher.group( 1 ).trim() ) );
-                        }
-                        if ( turbospeedMatcher.find() ) {
-                            product.setTurbospeed( NumberUtils.toDouble( turbospeedMatcher.group( 1 ).trim() ) );
-                        }
-                        if ( TDPMatcher.find() ) {
-                            product.setTDP( new BigInteger( TDPMatcher.group( 1 ).trim() ) );
-                        }
-                        if ( noOfCoresMatcher.find() ) {
-                            product.setNoOfCores( noOfCoresMatcher.group( 1 ).trim() );
-                        }
-                        if ( descriptionMatcher.find() ) {
-                            product.setDescription( descriptionMatcher.group( 1 ).trim() );
+                            if ( socketMatcher.find() ) {
+                                product.setSocket( socketMatcher.group( 1 ).trim() );
+                            }
+                            if ( clockspeedMatcher.find() ) {
+                                product.setClockspeed( NumberUtils.toDouble( clockspeedMatcher.group( 1 ) ) );
+                            }
+                            if ( turbospeedMatcher.find() ) {
+                                product.setTurbospeed( NumberUtils.toDouble( turbospeedMatcher.group( 1 ) ) );
+                            }
+                            if ( TDPMatcher.find() ) {
+                                if (NumberUtils.toDouble( TDPMatcher.group( 1 ) ) > 0 ) {
+                                    product.setTDP( NumberUtils.toDouble( TDPMatcher.group( 1 ) ) );
+                                }
+                            }
+                            if ( noOfCoresMatcher.find() ) {
+                                product.setNoOfCores( noOfCoresMatcher.group( 1 ).trim() );
+                            }
+                            if ( descriptionMatcher.find() ) {
+                                product.setDescription( descriptionMatcher.group( 1 ).trim() );
+                            }
                         }
                         emCount++;
+                    }
+
+                    if ( element.getName().toString().equals( "tr" ) ) {
+                        if ( trCount == 1 ) {
+                            inTrBenchMark = true;
+                        }
+                        trCount++;
+                    }
+
+                    if ( element.getName().toString().equals( "td" ) && inTrBenchMark ) {
+                        if ( tdCount == 1 ) {
+                            inTdBenchMark = true;
+                        }
+                        tdCount++;
+                    }
+
+                    if ( element.getName().toString().equals( "span" ) && inTdBenchMark ) {
+                        if ( spanCount == 0 ) {
+                            inSpanBenchMark = true;
+                        }
+                        spanCount++;
+                    }
+
+                    if ( inTrBenchMark && inTdBenchMark && inSpanBenchMark ) {
+                        product.setBenchmark( new BigInteger( reader.getElementText() ) );
+                        break;
                     }
                 }
             }
@@ -262,19 +304,31 @@ public class Crawler implements Runnable {
         } catch ( UnsupportedEncodingException e ) {
             e.printStackTrace();
         }
-        System.out.println(product);
+        System.out.println( product );
         return product;
-    }
-
-    public void start() {
-        String html = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
-        InputStream is = preProcessMainWebsite( html );
-        List<Product> list = parseMainWebsite( is );
-
     }
 
     @Override
     public void run() {
+        this.flag = true;
+        List<Product> list = new ArrayList<>();
 
+        String html1 = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
+        InputStream is1 = preProcessMainWebsite( html1 );
+        list.addAll( parseMainWebsite( is1 ) );
+
+        String html2 = URIResolver( URLEnum.MAIN_WEBSITE_2.getUrl() );
+        InputStream is2 = preProcessMainWebsite( html2 );
+        list.addAll( parseMainWebsite( is2 ) );
+
+        String html3 = URIResolver( URLEnum.MAIN_WEBSITE_3.getUrl() );
+        InputStream is3 = preProcessMainWebsite( html3 );
+        list.addAll( parseMainWebsite( is3 ) );
+
+        String html4 = URIResolver( URLEnum.MAIN_WEBSITE_4.getUrl() );
+        InputStream is4 = preProcessMainWebsite( html4 );
+        list.addAll( parseMainWebsite( is4 ) );
+
+        productRepository.saveListProducts( list );
     }
 }

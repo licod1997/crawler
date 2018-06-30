@@ -1,5 +1,7 @@
 package com.pickyourcpu.entity;
 
+import javax.annotation.Generated;
+import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.math.BigInteger;
 
@@ -12,40 +14,52 @@ import java.math.BigInteger;
         "TDP"
 } )
 @XmlRootElement( name = "product", namespace = "http://www.pickyourcpu.vn/schema/products" )
+@Table
+@Entity( name = "product" )
 public class Product {
-
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", required = true )
-    @XmlSchemaType( name = "positiveInteger" )
-    private BigInteger id;
+    @XmlSchemaType( name = "long" )
+    @Id
+    @GeneratedValue( strategy = GenerationType.IDENTITY )
+    @Column( name = "id" )
+    private Long id;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", required = true )
+    @Column( name = "name" )
     private String name;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", required = true )
     @XmlSchemaType( name = "positiveInteger" )
+    @Column( name = "benchmark" )
     private BigInteger benchmark;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products" )
+    @Column( name = "socket" )
     private String socket;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products" )
     @XmlSchemaType( name = "double" )
+    @Column( name = "clockspeed" )
     private Double clockspeed;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products" )
     @XmlSchemaType( name = "double" )
+    @Column( name = "turbospeed" )
     private Double turbospeed;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products" )
-    @XmlSchemaType( name = "positiveInteger" )
-    private BigInteger TDP;
+    @XmlSchemaType( name = "double" )
+    @Column( name = "TDP" )
+    private Double TDP;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products" )
+    @Column( name = "no_of_cores" )
     private String noOfCores;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products" )
+    @Column( name = "description" )
     private String description;
 
     public Product() {
     }
 
-    public BigInteger getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId( BigInteger id ) {
+    public void setId( Long id ) {
         this.id = id;
     }
 
@@ -73,11 +87,11 @@ public class Product {
         this.clockspeed = clockspeed;
     }
 
-    public BigInteger getTDP() {
+    public Double getTDP() {
         return TDP;
     }
 
-    public void setTDP( BigInteger TDP ) {
+    public void setTDP( Double TDP ) {
         this.TDP = TDP;
     }
 

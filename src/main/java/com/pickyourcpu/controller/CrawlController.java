@@ -16,8 +16,18 @@ public class CrawlController {
 
     @GetMapping( value = "/bat-dau-crawl" )
     public String crawlStart() {
-        if ( thread != null && !thread.isAlive() ) {
-            thread.start();
+        thread = new Thread( crawler );
+        thread.start();
+        return "crawl";
+    }
+
+    @GetMapping( value = "/dung-crawl" )
+    public String crawlStop() {
+        crawler.stopCrawling();
+        try {
+            thread.join();
+        } catch ( InterruptedException e ) {
+            e.printStackTrace();
         }
         return "crawl";
     }
@@ -26,11 +36,5 @@ public class CrawlController {
     public ResponseEntity checkThread() {
         if ( thread != null && thread.isAlive() ) return ResponseEntity.ok( "Running" );
         return ResponseEntity.ok( "Stopped" );
-    }
-
-    @GetMapping( value = "/crawl" )
-    public ResponseEntity crawl() {
-        crawler.start();
-        return ResponseEntity.ok().build();
     }
 }
