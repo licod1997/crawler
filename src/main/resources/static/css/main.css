@@ -1,0 +1,50 @@
+.btn-main-blue {
+  color: #fff;
+  background-color: #1E68CB;
+  border-color: #1E68CB;
+}
+
+.btn-main-blue:hover {
+  background-color: #1b5db6;
+  border-color: #1b5db6;
+}
+
+#nav-1 {
+  background-color: #fff;
+}
+#nav-1 .navbar-brand img {
+  width: 178.75px;
+  height: 78.3333333333px;
+}
+
+#nav-1, #nav-2 {
+  z-index: 1000;
+}
+#nav-1 .nav-item:first-child, #nav-2 .nav-item:first-child {
+  margin-left: -8px;
+}
+#nav-1 .nav-item > .nav-link, #nav-2 .nav-item > .nav-link {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+#nav-1 .nav-item:not(.active) > .nav-link, #nav-2 .nav-item:not(.active) > .nav-link {
+  color: #0A2344;
+}
+#nav-1 .nav-item.active > .nav-link,
+#nav-1 .nav-item:not(.active) > .nav-link:hover, #nav-2 .nav-item.active > .nav-link,
+#nav-2 .nav-item:not(.active) > .nav-link:hover {
+  color: #1E68CB;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+#nav-1 .container-fluid, #nav-2 .container-fluid {
+  width: 94.5%;
+}
+
+#page-content {
+  padding-top: 174px;
+}
+#page-content .container-fluid {
+  width: 93%;
+}
+
+/*# sourceMappingURL=css/main.css.map */

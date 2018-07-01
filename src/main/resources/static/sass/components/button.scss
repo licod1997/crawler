@@ -1,0 +1,10 @@
+.btn-main-blue {
+    color: #fff;
+    background-color: $main-blue;
+    border-color: $main-blue;
+}
+
+.btn-main-blue:hover {
+    background-color: $main-blue-hover;
+    border-color: $main-blue-hover;
+}

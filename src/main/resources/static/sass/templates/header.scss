@@ -1,0 +1,42 @@
+$logo-width: 429px;
+$logo-height: 188px;
+
+#nav-1 {
+    background-color: #fff;
+    
+    .navbar-brand img {
+        width: $logo-width / 2.4;
+        height: $logo-height / 2.4;
+    }
+}
+
+#nav-1, #nav-2 {
+    z-index: 1000;
+    
+    .nav-item:first-child {
+        margin-left: -8px;
+    }
+    
+    .nav-item>.nav-link {
+        font-weight: 700;
+        font-size: 0.8rem;
+    }
+    
+    .nav-item:not(.active)>.nav-link {
+        color: $dark-blue;
+    }
+    
+    .nav-item.active>.nav-link,
+    .nav-item:not(.active)>.nav-link:hover {
+        color: $main-blue;
+        transition: 
+            color .15s ease-in-out,
+            background-color .15s ease-in-out,
+            border-color .15s ease-in-out,
+            box-shadow .15s ease-in-out;
+    }
+    
+    .container-fluid {
+        width: 94.5%;
+    }
+}
