@@ -21,7 +21,7 @@
                         document.getElementById( "status" ).innerHTML = this.responseText;
                     } else {
                         document.getElementById( "status" ).innerHTML = this.responseText;
-                        clearInterval(x);
+                        clearInterval( x );
                     }
                 }
             };

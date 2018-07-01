@@ -1,12 +1,19 @@
 package com.pickyourcpu.crawler;
 
 import com.pickyourcpu.entity.Product;
+import com.pickyourcpu.entity.Products;
 import com.pickyourcpu.enu.URLEnum;
 import com.pickyourcpu.repository.ProductRepository;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -14,8 +21,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import java.io.*;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -30,6 +40,7 @@ import java.util.stream.Collectors;
 public class Crawler implements Runnable {
 
     private final ProductRepository productRepository;
+    private long genProductId = 0;
 
     @Autowired
     public Crawler( ProductRepository productRepository ) {
@@ -132,6 +143,7 @@ public class Crawler implements Runnable {
 
             boolean inProductTag = false;
             boolean inProductNameTag = false;
+            genProductId = 0;
 
             while ( reader.hasNext() && flag ) {
                 XMLEvent event = reader.nextEvent();
@@ -225,8 +237,8 @@ public class Crawler implements Runnable {
 
                     if ( element.getName().toString().equals( "span" ) ) {
                         Attribute spanAttr = element.getAttributeByName( new QName( "class" ) );
-                        if ( spanAttr != null ) {
-                            product.setName( reader.getElementText().trim() );
+                        if ( spanAttr != null && spanAttr.getValue().equals( "cpuname" )) {
+                            product.setName( reader.getElementText().split( "@" )[0].trim() );
                         }
                     }
 
@@ -240,7 +252,7 @@ public class Crawler implements Runnable {
                             Matcher clockspeedMatcher = clockspeedPattern.matcher( fragment );
                             Pattern turbospeedPattern = Pattern.compile( "<strong>Turbo Speed:</strong>(.*?)GHz<br></br>" );
                             Matcher turbospeedMatcher = turbospeedPattern.matcher( fragment );
-                            Pattern noOfCoresPattern = Pattern.compile( "<strong>No of Cores:</strong>(.*?)<br></br>" );
+                            Pattern noOfCoresPattern = Pattern.compile( "<strong>No of Cores:</strong>(.*?)(\\((.*?)\\)){0,1}<br></br>" );
                             Matcher noOfCoresMatcher = noOfCoresPattern.matcher( fragment );
                             Pattern TDPPattern = Pattern.compile( "<strong>Typical TDP:</strong>(.*?)W<br></br>" );
                             Matcher TDPMatcher = TDPPattern.matcher( fragment );
@@ -251,18 +263,19 @@ public class Crawler implements Runnable {
                                 product.setSocket( socketMatcher.group( 1 ).trim() );
                             }
                             if ( clockspeedMatcher.find() ) {
-                                product.setClockspeed( NumberUtils.toDouble( clockspeedMatcher.group( 1 ) ) );
+                                product.setClockspeed( NumberUtils.toDouble( clockspeedMatcher.group( 1 ).trim() ) );
                             }
                             if ( turbospeedMatcher.find() ) {
-                                product.setTurbospeed( NumberUtils.toDouble( turbospeedMatcher.group( 1 ) ) );
+                                product.setTurbospeed( NumberUtils.toDouble( turbospeedMatcher.group( 1 ).trim() ) );
                             }
                             if ( TDPMatcher.find() ) {
-                                if (NumberUtils.toDouble( TDPMatcher.group( 1 ) ) > 0 ) {
-                                    product.setTDP( NumberUtils.toDouble( TDPMatcher.group( 1 ) ) );
+                                if ( NumberUtils.toDouble( TDPMatcher.group( 1 ).trim() ) > 0 ) {
+                                    product.setTDP( NumberUtils.toDouble( TDPMatcher.group( 1 ).trim() ) );
                                 }
                             }
                             if ( noOfCoresMatcher.find() ) {
-                                product.setNoOfCores( noOfCoresMatcher.group( 1 ).trim() );
+                                product.setNoOfCores( NumberUtils.toInt( noOfCoresMatcher.group( 1 ).trim() ) );
+                                product.setCoresDescription( noOfCoresMatcher.group( 3 ) );
                             }
                             if ( descriptionMatcher.find() ) {
                                 product.setDescription( descriptionMatcher.group( 1 ).trim() );
@@ -293,7 +306,7 @@ public class Crawler implements Runnable {
                     }
 
                     if ( inTrBenchMark && inTdBenchMark && inSpanBenchMark ) {
-                        product.setBenchmark( new BigInteger( reader.getElementText() ) );
+                        product.setBenchmark( NumberUtils.toInt( reader.getElementText() ) );
                         break;
                     }
                 }
@@ -308,27 +321,91 @@ public class Crawler implements Runnable {
         return product;
     }
 
+    public InputStream transformXML( Products products ) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        StringWriter writer = new StringWriter();
+        try {
+            JAXBContext context = JAXBContext.newInstance( products.getClass() );
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty( Marshaller.JAXB_ENCODING, "UTF-8" );
+            marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
+            marshaller.marshal( products, os );
+            marshaller.marshal( products, writer );
+        } catch ( JAXBException e ) {
+            e.printStackTrace();
+        }
+        System.out.println( writer.getBuffer().toString() );
+        return new ByteArrayInputStream( os.toByteArray() );
+    }
+
+    public boolean validateXML( InputStream is, Products products ) {
+        try {
+            JAXBContext context = JAXBContext.newInstance( products.getClass() );
+            SchemaFactory factory = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
+            Schema schema = factory.newSchema( new File( "src/main/resources/static/xsd/products.xsd" ) );
+            Validator validator = schema.newValidator();
+            InputSource input = new InputSource( is );
+            validator.validate( new SAXSource( input ) );
+            return true;
+        } catch ( JAXBException e ) {
+            e.printStackTrace();
+        } catch ( SAXException e ) {
+            e.printStackTrace();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+//    public void sm() {
+//
+//        this.flag = true;
+//        Products products = new Products();
+//
+////        String html1 = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
+////        InputStream is1 = preProcessMainWebsite( html1 );
+////        products.getProduct().addAll( parseMainWebsite( is1 ) );
+////
+////        String html2 = URIResolver( URLEnum.MAIN_WEBSITE_2.getUrl() );
+////        InputStream is2 = preProcessMainWebsite( html2 );
+////        products.getProduct().addAll( parseMainWebsite( is2 ) );
+////
+////        String html3 = URIResolver( URLEnum.MAIN_WEBSITE_3.getUrl() );
+////        InputStream is3 = preProcessMainWebsite( html3 );
+////        products.getProduct().addAll( parseMainWebsite( is3 ) );
+//
+//        String html4 = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
+//        InputStream is4 = preProcessMainWebsite( html4 );
+//        products.getProduct().addAll( parseMainWebsite( is4 ) );
+//
+//        if ( validateXML( transformXML( products ), products ) ) {
+//            productRepository.saveListProducts( products.getProduct() );
+//        }
+//    }
+
     @Override
     public void run() {
         this.flag = true;
-        List<Product> list = new ArrayList<>();
+        Products products = new Products();
 
         String html1 = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
         InputStream is1 = preProcessMainWebsite( html1 );
-        list.addAll( parseMainWebsite( is1 ) );
+        products.getProduct().addAll( parseMainWebsite( is1 ) );
 
-        String html2 = URIResolver( URLEnum.MAIN_WEBSITE_2.getUrl() );
-        InputStream is2 = preProcessMainWebsite( html2 );
-        list.addAll( parseMainWebsite( is2 ) );
+//        String html2 = URIResolver( URLEnum.MAIN_WEBSITE_2.getUrl() );
+//        InputStream is2 = preProcessMainWebsite( html2 );
+//        products.getProduct().addAll( parseMainWebsite( is2 ) );
+//
+//        String html3 = URIResolver( URLEnum.MAIN_WEBSITE_3.getUrl() );
+//        InputStream is3 = preProcessMainWebsite( html3 );
+//        products.getProduct().addAll( parseMainWebsite( is3 ) );
+//
+//        String html4 = URIResolver( URLEnum.MAIN_WEBSITE_4.getUrl() );
+//        InputStream is4 = preProcessMainWebsite( html4 );
+//        products.getProduct().addAll( parseMainWebsite( is4 ) );
 
-        String html3 = URIResolver( URLEnum.MAIN_WEBSITE_3.getUrl() );
-        InputStream is3 = preProcessMainWebsite( html3 );
-        list.addAll( parseMainWebsite( is3 ) );
-
-        String html4 = URIResolver( URLEnum.MAIN_WEBSITE_4.getUrl() );
-        InputStream is4 = preProcessMainWebsite( html4 );
-        list.addAll( parseMainWebsite( is4 ) );
-
-        productRepository.saveListProducts( list );
+        if ( validateXML( transformXML( products ), products ) ) {
+            productRepository.saveListProducts( products.getProduct() );
+        }
     }
 }
