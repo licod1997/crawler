@@ -8,6 +8,11 @@ public class SearchCreateriaDTO {
     private String socket;
     private String type;
     private Integer noOfCores;
+    private Integer page;
+    private Integer maxSize;
+    private Integer totalPage;
+    private String sort;
+    private String field;
 
     public SearchCreateriaDTO() {
     }
@@ -42,5 +47,45 @@ public class SearchCreateriaDTO {
 
     public void setNoOfCores( Integer noOfCores ) {
         this.noOfCores = noOfCores;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage( Integer page ) {
+        this.page = page;
+    }
+
+    public Integer getMaxSize() {
+        return maxSize;
+    }
+
+    public void setMaxSize( Integer maxSize ) {
+        this.maxSize = maxSize;
+    }
+
+    public Integer getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage( Integer totalPage ) {
+        this.totalPage = totalPage;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort( String sort ) {
+        this.sort = sort;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField( String field ) {
+        this.field = field;
     }
 }

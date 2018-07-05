@@ -3,6 +3,7 @@ package com.pickyourcpu.repository;
 import com.pickyourcpu.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -10,6 +11,12 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+
+    @Query(value = "select distinct no_of_cores from product", nativeQuery = true)
+    List<Integer> findDistinctNoOfCores();
+
+    @Query(value = "select distinct socket from product", nativeQuery = true)
+    List<String> findDistinctSocket();
 
     Product findProductByName( String name );
 
@@ -33,6 +40,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
                 dbProduct.setTDP( product.getTDP() );
                 dbProduct.setDescription( product.getDescription() );
                 dbProduct.setCoresDescription( product.getCoresDescription() );
+//                dbProduct.setShops( product.getShops() );
                 result.add( save( dbProduct ));
             }
         }

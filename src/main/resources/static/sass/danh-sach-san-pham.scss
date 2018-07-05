@@ -1,0 +1,119 @@
+@import "./components/color.scss";
+@import "./components/button.scss";
+@import "./templates/body";
+@import "./templates/header.scss";
+@import "./templates/content.scss";
+@import "./templates/footer.scss";
+
+#list-content {
+
+  display: flex;
+
+  .col-sm-12, .col-sm-3 {
+    padding-left: 5px;
+  }
+
+  .col-sm-3 {
+    padding-bottom: 10px;
+    display: flex;
+  }
+
+  .card-body {
+    padding: 8px;
+    flex-direction: column;
+    display: flex;
+
+    a.product-name {
+      text-decoration: none;
+      color: #333;
+
+      .card-text {
+        margin-bottom: auto;
+      }
+    }
+
+    a.product-name:hover {
+      color: $main-red-hover;
+    }
+
+    .product-action {
+      margin-top: auto;
+
+      a {
+        text-decoration: none;
+        margin-top: 8px;
+
+        b:not(.result) {
+          color: $main-blue;
+        }
+
+        b.result {
+          color: $main-red;
+        }
+      }
+
+      a:hover {
+        b:not(.result) {
+          color: $main-blue-hover;
+        }
+
+        b.result {
+          color: $main-red-hover;
+        }
+      }
+    }
+  }
+}
+
+#nav-3 {
+  background: $main-blue;
+}
+
+.page-link {
+  color: $main-blue;
+}
+
+.page-link:hover {
+  color: $main-blue-hover;
+}
+
+.page-item.active .page-link {
+  background-color: $main-blue;
+  border-color: $main-blue;
+}
+
+.page-item, .page-item > a.page-link {
+  display: flex;
+}
+
+#filter * {
+  font-size: 13px;
+
+  .card-header {
+    padding: 5px 5px;
+
+    .btn-link {
+      text-decoration: none;
+      color: $dark-blue;
+      width: 100%;
+      clear: both;
+
+      b {
+        float: left;
+      }
+      i {
+        float: right;
+      }
+    }
+
+    .btn-link:hover {
+      color: $main-blue;
+    }
+  }
+
+  .collapse {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+}

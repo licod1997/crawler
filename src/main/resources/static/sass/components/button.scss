@@ -5,6 +5,19 @@
 }
 
 .btn-main-blue:hover {
+    color: #fff;
     background-color: $main-blue-hover;
     border-color: $main-blue-hover;
+}
+
+.btn-main-red {
+    color: #fff;
+    background-color: $main-red;
+    border-color: $main-red;
+}
+
+.btn-main-red:hover {
+    color: #fff;
+    background-color: $main-red-hover;
+    border-color: $main-red-hover;
 }

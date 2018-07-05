@@ -1,4 +1,4 @@
-package com.pickyourcpu.entity;
+package com.pickyourcpu.jaxb;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
@@ -9,14 +9,18 @@ import java.util.List;
         "product"
 } )
 @XmlRootElement( name = "products", namespace = "http://www.pickyourcpu.vn/schema/products" )
-public class Products {
+public class ProductsJAXB {
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", required = true )
-    protected List<Product> product;
+    private List<ProductJAXB> product;
 
-    public List<Product> getProduct() {
+    public List<ProductJAXB> getProduct() {
         if ( product == null ) {
             product = new ArrayList<>();
         }
-        return this.product;
+        return product;
+    }
+
+    public void setProduct( List<ProductJAXB> product ) {
+        this.product = product;
     }
 }

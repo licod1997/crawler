@@ -1,8 +1,9 @@
 package com.pickyourcpu.crawler;
 
 import com.pickyourcpu.entity.Product;
-import com.pickyourcpu.entity.Products;
+import com.pickyourcpu.entity.Shop;
 import com.pickyourcpu.enu.URLEnum;
+import com.pickyourcpu.jaxb.ProductsJAXB;
 import com.pickyourcpu.repository.ProductRepository;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -93,7 +95,7 @@ public class Crawler implements Runnable {
         return null;
     }
 
-    public InputStream preProcessMainWebsite( String rawString ) {
+    public InputStream preProcessCPUBenchmark( String rawString ) {
         //get necessary part of html
         int start = rawString.indexOf( "<div id=\"mark\"" );
         int end = rawString.indexOf( "<div id=\"value\"" );
@@ -107,7 +109,7 @@ public class Crawler implements Runnable {
         return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
     }
 
-    public InputStream preProcessMainWebsiteDetail( String rawString ) {
+    public InputStream preprocessCPUBenchmarkDetail( String rawString ) {
         //get necessary part of html
         Pattern startPattern = Pattern.compile( "(<table.*?class=\"desc\".*?)>" );
         Matcher startMatcher = startPattern.matcher( rawString );
@@ -130,7 +132,29 @@ public class Crawler implements Runnable {
         return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
     }
 
-    public List<Product> parseMainWebsite( InputStream is ) {
+    public InputStream preprocessLongBinh( String rawString ) {
+        int start = rawString.indexOf( "<div class=\"tygh-content clearfix\">" );
+        int end = rawString.indexOf( "<div class=\"tygh-footer clearfix\" id=\"tygh_footer\">" );
+
+        rawString = rawString.substring( start, end );
+
+        rawString = rawString.replaceAll( "®", "" )
+                .replaceAll( "™", "" )
+                .replaceAll( "itemscope", "" )
+                .replaceAll( "</strong>", "" )
+                .replaceAll( "&nbsp;", "" );
+
+        try ( Writer writer = new FileWriter( "src/main/xml/data3.html" ) ) {
+            writer.write( rawString );
+            writer.flush();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+
+        return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
+    }
+
+    public List<Product> parseCPUBenchmark( InputStream is ) {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty( XMLInputFactory.IS_VALIDATING, false );
         factory.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false );
@@ -143,7 +167,6 @@ public class Crawler implements Runnable {
 
             boolean inProductTag = false;
             boolean inProductNameTag = false;
-            genProductId = 0;
 
             while ( reader.hasNext() && flag ) {
                 XMLEvent event = reader.nextEvent();
@@ -166,10 +189,10 @@ public class Crawler implements Runnable {
                         //detail start here
                         Attribute attrHref = element.getAttributeByName( new QName( "href" ) );
                         if ( attrHref != null ) {
-                            String detailUrl = URLEnum.MAIN_WEBSITE_HOST.getUrl() + "/" + attrHref.getValue();
+                            String detailUrl = URLEnum.CPUBENCHMARK_HOST.getUrl() + "/" + attrHref.getValue();
                             String htmlDetail = URIResolver( detailUrl );
-                            InputStream isDetail = preProcessMainWebsiteDetail( htmlDetail );
-                            Product product = parseMainWebsiteDetail( isDetail );
+                            InputStream isDetail = preprocessCPUBenchmarkDetail( htmlDetail );
+                            Product product = parseCPUBenchmarkDetail( isDetail );
                             list.add( product );
                         }
                         //end
@@ -187,30 +210,7 @@ public class Crawler implements Runnable {
         return list;
     }
 
-    public String readElementBody( XMLEventReader reader ) {
-        StringWriter writer = new StringWriter();
-        int depth = 0;
-
-        try {
-            while ( reader.hasNext() ) {
-                XMLEvent event = reader.nextEvent();
-
-                if ( event.isStartElement() ) depth++;
-                if ( event.isEndElement() ) {
-                    depth--;
-                    if ( depth < 0 ) break;
-                }
-
-                event.writeAsEncodedUnicode( writer );
-            }
-        } catch ( XMLStreamException e ) {
-            e.printStackTrace();
-        }
-
-        return writer.getBuffer().toString();
-    }
-
-    public Product parseMainWebsiteDetail( InputStream is ) {
+    public Product parseCPUBenchmarkDetail( InputStream is ) {
         XMLInputFactory factory = XMLInputFactory.newFactory();
         factory.setProperty( XMLInputFactory.IS_VALIDATING, false );
         factory.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false );
@@ -237,7 +237,7 @@ public class Crawler implements Runnable {
 
                     if ( element.getName().toString().equals( "span" ) ) {
                         Attribute spanAttr = element.getAttributeByName( new QName( "class" ) );
-                        if ( spanAttr != null && spanAttr.getValue().equals( "cpuname" )) {
+                        if ( spanAttr != null && spanAttr.getValue().equals( "cpuname" ) ) {
                             product.setName( reader.getElementText().split( "@" )[0].trim() );
                         }
                     }
@@ -260,7 +260,14 @@ public class Crawler implements Runnable {
                             Matcher descriptionMatcher = descriptionPattern.matcher( fragment );
 
                             if ( socketMatcher.find() ) {
-                                product.setSocket( socketMatcher.group( 1 ).trim() );
+                                product.setSocket( socketMatcher.group( 1 )
+                                        .replaceAll( "FCBGA", "BGA" )
+                                        .replaceAll( "FCLGA", "LGA" )
+                                        .replaceAll( "FCPGA", "PGA" )
+                                        .replaceAll( "Socket", "" )
+                                        .replaceAll( "FC-BGA", "" )
+                                        .replaceAll( "LGA2011-3", "LGA2011-v3" )
+                                        .replaceAll( " ", "" ));
                             }
                             if ( clockspeedMatcher.find() ) {
                                 product.setClockspeed( NumberUtils.toDouble( clockspeedMatcher.group( 1 ).trim() ) );
@@ -321,24 +328,111 @@ public class Crawler implements Runnable {
         return product;
     }
 
-    public InputStream transformXML( Products products ) {
+    public List<Product> parseLongBinh( InputStream is ) {
+        XMLInputFactory factory = XMLInputFactory.newFactory();
+        factory.setProperty( XMLInputFactory.IS_VALIDATING, false );
+        factory.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false );
+
+        XMLEventReader reader;
+        List<Product> list = new ArrayList<>();
+        Product product = new Product();
+        Shop shop = new Shop();
+        try {
+            reader = factory.createXMLEventReader( new InputStreamReader( is, "UTF-8" ) );
+
+            boolean inProductTag = false;
+
+            while ( reader.hasNext() && flag ) {
+                XMLEvent event = reader.nextEvent();
+
+                if ( event.isStartElement() ) {
+                    StartElement element = (StartElement) event;
+
+                    Attribute attrProduct = element.getAttributeByName( new QName( "class" ) );
+
+                    if ( attrProduct != null && attrProduct.getValue().equals( "ty-column4" ) ) {
+                        inProductTag = true;
+                    }
+
+                    if ( inProductTag ) {
+                        Attribute attrClass = element.getAttributeByName( new QName( "class" ) );
+
+                        if ( attrClass != null && attrClass.getValue().equals( "product-title" ) ) {
+                            Attribute attrUrl = element.getAttributeByName( new QName( "href" ) );
+                            Attribute attrName = element.getAttributeByName( new QName( "title" ) );
+
+                            if ( attrUrl != null ) {
+                                shop.setUrl( attrUrl.getValue() );
+                            }
+                            if ( attrName != null ) {
+                                product.setName( attrName.getValue() );
+                            }
+                        }
+
+                        if ( attrClass != null && attrClass.getValue().equals( "ty-price-num" ) ) {
+                            String price = reader.getElementText();
+                            if ( !price.equals( "đ" ) ) {
+                                shop.setPrice( new BigDecimal( price.trim().replaceAll( "\\.", "" ) ) );
+                                product.getShops().add( shop );
+                                list.add( product );
+                                product = new Product();
+                                shop = new Shop();
+                                inProductTag = false;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        } catch ( XMLStreamException e ) {
+            e.printStackTrace();
+        } catch ( UnsupportedEncodingException e ) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public String readElementBody( XMLEventReader reader ) {
+        StringWriter writer = new StringWriter();
+        int depth = 0;
+
+        try {
+            while ( reader.hasNext() ) {
+                XMLEvent event = reader.nextEvent();
+
+                if ( event.isStartElement() ) depth++;
+                if ( event.isEndElement() ) {
+                    depth--;
+                    if ( depth < 0 ) break;
+                }
+
+                event.writeAsEncodedUnicode( writer );
+            }
+        } catch ( XMLStreamException e ) {
+            e.printStackTrace();
+        }
+
+        return writer.getBuffer().toString();
+    }
+
+    public InputStream transformXML( ProductsJAXB productsJAXB ) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         StringWriter writer = new StringWriter();
         try {
-            JAXBContext context = JAXBContext.newInstance( products.getClass() );
+            JAXBContext context = JAXBContext.newInstance( productsJAXB.getClass() );
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty( Marshaller.JAXB_ENCODING, "UTF-8" );
             marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, true );
-            marshaller.marshal( products, os );
-            marshaller.marshal( products, writer );
+            marshaller.marshal( productsJAXB, os );
+            marshaller.marshal( productsJAXB, writer );
         } catch ( JAXBException e ) {
             e.printStackTrace();
         }
-        System.out.println( writer.getBuffer().toString() );
         return new ByteArrayInputStream( os.toByteArray() );
     }
 
-    public boolean validateXML( InputStream is, Products products ) {
+    public boolean validateXML( InputStream is, ProductsJAXB products ) {
         try {
             JAXBContext context = JAXBContext.newInstance( products.getClass() );
             SchemaFactory factory = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
@@ -357,55 +451,67 @@ public class Crawler implements Runnable {
         return false;
     }
 
-//    public void sm() {
-//
-//        this.flag = true;
-//        Products products = new Products();
-//
-////        String html1 = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
-////        InputStream is1 = preProcessMainWebsite( html1 );
-////        products.getProduct().addAll( parseMainWebsite( is1 ) );
-////
-////        String html2 = URIResolver( URLEnum.MAIN_WEBSITE_2.getUrl() );
-////        InputStream is2 = preProcessMainWebsite( html2 );
-////        products.getProduct().addAll( parseMainWebsite( is2 ) );
-////
-////        String html3 = URIResolver( URLEnum.MAIN_WEBSITE_3.getUrl() );
-////        InputStream is3 = preProcessMainWebsite( html3 );
-////        products.getProduct().addAll( parseMainWebsite( is3 ) );
-//
-//        String html4 = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
-//        InputStream is4 = preProcessMainWebsite( html4 );
-//        products.getProduct().addAll( parseMainWebsite( is4 ) );
-//
-//        if ( validateXML( transformXML( products ), products ) ) {
-//            productRepository.saveListProducts( products.getProduct() );
-//        }
-//    }
+    public void sm() {
+        this.flag = true;
+
+        String html1 = URIResolver( URLEnum.CPUBENCHMARK_1.getUrl() );
+        InputStream is1 = preProcessCPUBenchmark( html1 );
+        String html = URIResolver( URLEnum.LONGBINH.getUrl() );
+        InputStream is = preprocessLongBinh( html );
+
+        List<Product> productList = parseCPUBenchmark( is1 );
+        List<Product> productShopList = parseLongBinh( is );
+
+        ProductsJAXB productsJAXB = new ProductsJAXB();
+
+        for ( Product product : productList ) {
+            for ( Product tempProduct : productShopList ) {
+                if ( CrawlHelper.computeMatchingDensity( product.getName(), tempProduct.getName() ) == 100 ) {
+                    List<Shop> shopList = tempProduct.getShops();
+                    for ( Shop shop : shopList ) {
+                        shop.setProduct( product );
+                    }
+                    product.getShops().addAll( shopList );
+                }
+            }
+        }
+        productRepository.saveListProducts( productList );
+    }
 
     @Override
     public void run() {
         this.flag = true;
-        Products products = new Products();
 
-        String html1 = URIResolver( URLEnum.MAIN_WEBSITE_1.getUrl() );
-        InputStream is1 = preProcessMainWebsite( html1 );
-        products.getProduct().addAll( parseMainWebsite( is1 ) );
+        String html1 = URIResolver( URLEnum.CPUBENCHMARK_1.getUrl() );
+        InputStream is1 = preProcessCPUBenchmark( html1 );
+        String html = URIResolver( URLEnum.LONGBINH.getUrl() );
+        InputStream is = preprocessLongBinh( html );
 
-//        String html2 = URIResolver( URLEnum.MAIN_WEBSITE_2.getUrl() );
-//        InputStream is2 = preProcessMainWebsite( html2 );
-//        products.getProduct().addAll( parseMainWebsite( is2 ) );
-//
-//        String html3 = URIResolver( URLEnum.MAIN_WEBSITE_3.getUrl() );
-//        InputStream is3 = preProcessMainWebsite( html3 );
-//        products.getProduct().addAll( parseMainWebsite( is3 ) );
-//
-//        String html4 = URIResolver( URLEnum.MAIN_WEBSITE_4.getUrl() );
-//        InputStream is4 = preProcessMainWebsite( html4 );
-//        products.getProduct().addAll( parseMainWebsite( is4 ) );
+        List<Product> productList = parseCPUBenchmark( is1 );
+        List<Product> productShopList = parseLongBinh( is );
 
-        if ( validateXML( transformXML( products ), products ) ) {
-            productRepository.saveListProducts( products.getProduct() );
+        ProductsJAXB productsJAXB = new ProductsJAXB();
+
+        for ( Product product : productList ) {
+            for ( Product tempProduct : productShopList ) {
+                if ( CrawlHelper.computeMatchingDensity( product.getName(), tempProduct.getName() ) == 100 ) {
+                    product.getShops().addAll( tempProduct.getShops() );
+                }
+            }
         }
+//
+//        try (Writer writer = new FileWriter( "src/main/xml/something.txt" )){
+//            writer.write( productList.toString() );
+//            writer.flush();
+//        } catch ( Exception e ) {
+//            e.printStackTrace();
+//        }
+
+//        System.out.println("DONE");
+//        productsJAXB.getProduct().addAll( parseCPUBenchmark( is1 ) );
+//
+//        if ( validateXML( transformXML( productsJAXB ), productsJAXB ) ) {
+        productRepository.saveListProducts( productList );
+//        }
     }
 }

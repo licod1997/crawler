@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<products xmlns="http://www.pickyourcpu.vn/schema/products">
+<wrap xmlns="http://www.pickyourcpu.vn/schema/wrap">
     <product>
         <name>Intel Xeon Platinum 8173M @ 2.00GHz</name>
         <benchmark>28860</benchmark>
@@ -6641,9 +6641,9 @@
         <noOfCores>2</noOfCores>
         <coresDescription>2 logical cores per physical</coresDescription>
     </product>
-</products>
+</wrap>
 
-        org.xml.sax.SAXParseException; lineNumber: 4; columnNumber: 15; cvc-complex-type.2.4.a: Invalid content was found starting with element 'name'. One of '{"http://www.pickyourcpu.vn/schema/products":id}' is expected.
+        org.xml.sax.SAXParseException; lineNumber: 4; columnNumber: 15; cvc-complex-type.2.4.a: Invalid content was found starting with element 'name'. One of '{"http://www.pickyourcpu.vn/schema/wrap":id}' is expected.
         at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.createSAXParseException(ErrorHandlerWrapper.java:203)
         at com.sun.org.apache.xerces.internal.util.ErrorHandlerWrapper.error(ErrorHandlerWrapper.java:134)
         at com.sun.org.apache.xerces.internal.impl.XMLErrorReporter.reportError(XMLErrorReporter.java:396)
@@ -6751,7 +6751,7 @@
         Product{id=null, name='Intel Pentium Gold G5500 @ 3.80GHz', benchmark=5262, socket='FCLGA1151', clockspeed=3.8, turbospeed=null, TDP=54.0, noOfCores=2, coresDescription='2 logical cores per physical', description='Intel UHD Graphics 630'}
         Product{id=null, name='Intel Core i3-6300T @ 3.30GHz', benchmark=5245, socket='LGA 1151', clockspeed=3.3, turbospeed=null, TDP=35.0, noOfCores=2, coresDescription='2 logical cores per physical', description='null'}
         <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<products xmlns="http://www.pickyourcpu.vn/schema/products">
+<wrap xmlns="http://www.pickyourcpu.vn/schema/wrap">
 <product>
     <name>Intel Xeon Platinum 8173M @ 2.00GHz</name>
     <benchmark>28860</benchmark>
@@ -13393,4 +13393,4 @@
     <noOfCores>2</noOfCores>
     <coresDescription>2 logical cores per physical</coresDescription>
 </product>
-</products>
+</wrap>

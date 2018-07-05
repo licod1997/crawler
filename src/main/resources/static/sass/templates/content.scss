@@ -1,7 +1,8 @@
 #page-content {
-    padding-top: 174px;
-    
-    .container-fluid {
-        width: 93%;
-    }
+  padding-top: 188px;
+  min-height: calc(100% - 240px);
+
+  .container-fluid {
+    width: 93%;
+  }
 }

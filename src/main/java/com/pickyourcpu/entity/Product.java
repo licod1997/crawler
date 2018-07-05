@@ -1,64 +1,36 @@
 package com.pickyourcpu.entity;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.*;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-@XmlAccessorType( XmlAccessType.FIELD )
-@XmlType( name = "product", namespace = "http://www.pickyourcpu.vn/schema/products", propOrder = {
-        "id",
-        "name",
-        "benchmark",
-        "socket",
-        "clockspeed",
-        "turbospeed",
-        "TDP",
-        "noOfCores",
-        "coresDescription",
-        "description"
-} )
-@XmlRootElement( name = "product", namespace = "http://www.pickyourcpu.vn/schema/products" )
 @Table
 @Entity( name = "product" )
-public class Product implements Serializable {
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
-    @XmlSchemaType( name = "long" )
+public class Product {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
     @Column( name = "id" )
     private Long id;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", required = true )
     @Column( name = "name", unique = true, nullable = false )
     private String name;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
-    @XmlSchemaType( name = "integer" )
     @Column( name = "benchmark" )
     private Integer benchmark;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
     @Column( name = "socket" )
     private String socket;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
-    @XmlSchemaType( name = "double" )
     @Column( name = "clockspeed" )
     private Double clockspeed;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
-    @XmlSchemaType( name = "double" )
     @Column( name = "turbospeed" )
     private Double turbospeed;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
-    @XmlSchemaType( name = "double" )
     @Column( name = "TDP" )
     private Double TDP;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
-    @XmlSchemaType( name = "integer" )
     @Column( name = "no_of_cores" )
     private Integer noOfCores;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
     @Column( name = "cores_description" )
     private String coresDescription;
-    @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", nillable = true )
     @Column( name = "description" )
     private String description;
+    @OneToMany( mappedBy = "product", cascade = CascadeType.PERSIST, targetEntity = Shop.class )
+    private List<Shop> shops;
 
     public Product() {
     }
@@ -143,6 +115,17 @@ public class Product implements Serializable {
         this.coresDescription = coresDescription;
     }
 
+    public List<Shop> getShops() {
+        if ( shops == null ) {
+            shops = new ArrayList<>();
+        }
+        return shops;
+    }
+
+    public void setShops( List<Shop> shops ) {
+        this.shops = shops;
+    }
+
     @Override
     public boolean equals( Object o ) {
         if ( this == o ) return true;
@@ -160,7 +143,9 @@ public class Product implements Serializable {
         if ( noOfCores != null ? !noOfCores.equals( product.noOfCores ) : product.noOfCores != null ) return false;
         if ( coresDescription != null ? !coresDescription.equals( product.coresDescription ) : product.coresDescription != null )
             return false;
-        return description != null ? description.equals( product.description ) : product.description == null;
+        if ( description != null ? !description.equals( product.description ) : product.description != null )
+            return false;
+        return shops != null ? shops.equals( product.shops ) : product.shops == null;
     }
 
     @Override
@@ -175,6 +160,7 @@ public class Product implements Serializable {
         result = 31 * result + (noOfCores != null ? noOfCores.hashCode() : 0);
         result = 31 * result + (coresDescription != null ? coresDescription.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (shops != null ? shops.hashCode() : 0);
         return result;
     }
 
@@ -182,15 +168,16 @@ public class Product implements Serializable {
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", benchmark=" + benchmark +
-                ", socket='" + socket + '\'' +
-                ", clockspeed=" + clockspeed +
-                ", turbospeed=" + turbospeed +
-                ", TDP=" + TDP +
-                ", noOfCores=" + noOfCores +
-                ", coresDescription='" + coresDescription + '\'' +
-                ", description='" + description + '\'' +
+                ",\n name='" + name + '\'' +
+                ",\n benchmark=" + benchmark +
+                ",\n socket='" + socket + '\'' +
+                ",\n clockspeed=" + clockspeed +
+                ",\n turbospeed=" + turbospeed +
+                ",\n TDP=" + TDP +
+                ",\n noOfCores=" + noOfCores +
+                ",\n coresDescription='" + coresDescription + '\'' +
+                ",\n description='" + description + '\'' +
+                ",\n shops=" + shops +
                 '}';
     }
 }
