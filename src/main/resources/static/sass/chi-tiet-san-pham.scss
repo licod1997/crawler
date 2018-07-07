@@ -1,0 +1,24 @@
+@import "./components/color.scss";
+@import "./components/button.scss";
+@import "./templates/body";
+@import "./templates/header.scss";
+@import "./templates/content.scss";
+@import "./templates/footer.scss";
+
+#final-score {
+  align-self: center;
+  b {
+    float: right;
+    color: $main-red;
+    font-size: 30px;
+    align-self: center;
+  }
+}
+.manufacture-img {
+  width: 280px;
+  height: 280px;
+}
+
+#product-detail {
+  padding-top: 20px;
+}

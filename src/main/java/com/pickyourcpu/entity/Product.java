@@ -29,7 +29,7 @@ public class Product {
     private String coresDescription;
     @Column( name = "description" )
     private String description;
-    @OneToMany( mappedBy = "product", cascade = CascadeType.PERSIST, targetEntity = Shop.class )
+    @OneToMany( mappedBy = "product", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, targetEntity = Shop.class )
     private List<Shop> shops;
 
     public Product() {
@@ -143,9 +143,7 @@ public class Product {
         if ( noOfCores != null ? !noOfCores.equals( product.noOfCores ) : product.noOfCores != null ) return false;
         if ( coresDescription != null ? !coresDescription.equals( product.coresDescription ) : product.coresDescription != null )
             return false;
-        if ( description != null ? !description.equals( product.description ) : product.description != null )
-            return false;
-        return shops != null ? shops.equals( product.shops ) : product.shops == null;
+        return description != null ? description.equals( product.description ) : product.description == null;
     }
 
     @Override
@@ -160,7 +158,6 @@ public class Product {
         result = 31 * result + (noOfCores != null ? noOfCores.hashCode() : 0);
         result = 31 * result + (coresDescription != null ? coresDescription.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (shops != null ? shops.hashCode() : 0);
         return result;
     }
 

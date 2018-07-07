@@ -8,10 +8,14 @@ $logo-height: 188px;
         width: $logo-width / 2.4;
         height: $logo-height / 2.4;
     }
+
+    .dropdown-menu {
+        z-index: 1000;
+        display: block;
+    }
 }
 
 #nav-1, #nav-2 {
-    z-index: 1000;
     
     .nav-item:first-child {
         margin-left: -8px;

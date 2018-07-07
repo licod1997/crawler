@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.*;
         "products"
 } )
 @XmlRootElement( name = "response", namespace = "http://www.pickyourcpu.vn/schema/products" )
-public class ProductPageResponse {
+public class ProductPageResponseDTO {
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", required = true )
     private ProductsJAXB products;
     @XmlElement( namespace = "http://www.pickyourcpu.vn/schema/products", required = true )
@@ -37,7 +37,7 @@ public class ProductPageResponse {
     @XmlSchemaType( name = "int" )
     private int number;
 
-    public ProductPageResponse() {
+    public ProductPageResponseDTO() {
     }
 
     public ProductsJAXB getProducts() {
@@ -98,7 +98,7 @@ public class ProductPageResponse {
 
     @Override
     public String toString() {
-        return "ProductPageResponse{" +
+        return "ProductPageResponseDTO{" +
                 "products=" + products +
                 ", first=" + first +
                 ", last=" + last +

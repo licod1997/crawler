@@ -12,13 +12,17 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-    @Query(value = "select distinct no_of_cores from product", nativeQuery = true)
+    @Query( value = "select distinct no_of_cores from product", nativeQuery = true )
     List<Integer> findDistinctNoOfCores();
 
-    @Query(value = "select distinct socket from product", nativeQuery = true)
+    @Query( value = "select distinct socket from product", nativeQuery = true )
     List<String> findDistinctSocket();
 
     Product findProductByName( String name );
+
+    Product findProductById( Long id );
+
+    List<Product> findTop5ByNameLike( String name );
 
     default List<Product> saveListProducts( List<Product> products ) {
         List<Product> result = new ArrayList<>();
@@ -41,7 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
                 dbProduct.setDescription( product.getDescription() );
                 dbProduct.setCoresDescription( product.getCoresDescription() );
 //                dbProduct.setShops( product.getShops() );
-                result.add( save( dbProduct ));
+                result.add( save( dbProduct ) );
             }
         }
         return result;

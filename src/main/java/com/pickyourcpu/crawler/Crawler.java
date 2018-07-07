@@ -466,7 +466,9 @@ public class Crawler implements Runnable {
 
         for ( Product product : productList ) {
             for ( Product tempProduct : productShopList ) {
-                if ( CrawlHelper.computeMatchingDensity( product.getName(), tempProduct.getName() ) == 100 ) {
+                if ( CrawlHelper.computeMatchingDensity(
+                        product.getName().replaceAll( " ", "" ).toLowerCase(),
+                        tempProduct.getName().replaceAll( " ", "" ).toLowerCase() ) == 100 ) {
                     List<Shop> shopList = tempProduct.getShops();
                     for ( Shop shop : shopList ) {
                         shop.setProduct( product );

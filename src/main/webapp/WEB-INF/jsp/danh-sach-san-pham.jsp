@@ -7,8 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <html>
 <head>
     <title>Danh sách sản phẩm</title>
@@ -98,6 +97,39 @@
                         <span style="font-size: 1.3rem"><b>Bộ lọc</b></span>
                     </div>
                     <div id="filter">
+                        <div class="card" id="card-0">
+                            <div class="card-header">
+                                <button class="btn btn-link collapsed">
+                                    <b>Sắp xếp theo</b>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+
+                            <div class="collapse show">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col col-sm-6">
+                                            <input type="radio" name="sort" value="ASC" checked> A-Z
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <input type="radio" name="sort" value="DESC"> Z-A
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <input type="radio" name="field" value="price" checked> Giá
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <input type="radio" name="field" value="benchmark"> Điểm
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <input type="radio" name="buyable" value="true" checked> Có thể mua
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <input type="radio" name="buyable" value="false"> Tất cả
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card" id="card-1">
                             <div class="card-header">
                                 <button class="btn btn-link collapsed">
@@ -110,13 +142,13 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col col-sm-6">
-                                            <input type="checkbox" value="Intel"> Intel
+                                            <input type="checkbox" name="manufacture" value="Intel"> Intel
                                         </div>
                                         <div class="col col-sm-6">
-                                            <input type="checkbox" value="AMD"> AMD
+                                            <input type="checkbox" name="manufacture" value="AMD"> AMD
                                         </div>
                                         <div class="col col-sm-6">
-                                            <input type="checkbox" value="Others"> Khác
+                                            <input type="checkbox" name="manufacture" value="Others"> Khác
                                         </div>
                                     </div>
                                 </div>
@@ -132,19 +164,19 @@
                             <div class="collapse show">
                                 <div class="card-body">
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" value="0-5000000"> 0 ₫ - 5.000.000 ₫
+                                        <input type="checkbox" name="price" value="0-5000000"> 0 ₫ - 5.000.000 ₫
                                     </div>
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" value="5000000-10000000"> 5.000.000 ₫ - 10.000.000 ₫
+                                        <input type="checkbox" name="price" value="5000000-10000000"> 5.000.000 ₫ - 10.000.000 ₫
                                     </div>
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" value="10000000-20000000"> 10.000.000 ₫ - 20.000.000 ₫
+                                        <input type="checkbox" name="price" value="10000000-20000000"> 10.000.000 ₫ - 20.000.000 ₫
                                     </div>
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" value="20000000-30000000"> 20.000.000 ₫ - 30.000.000 ₫
+                                        <input type="checkbox" name="price" value="20000000-30000000"> 20.000.000 ₫ - 30.000.000 ₫
                                     </div>
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" value="30000000-gt"> Trên 30.000.000 ₫
+                                        <input type="checkbox" name="price" value="30000000-1000000000"> Trên 30.000.000 ₫
                                     </div>
                                 </div>
                             </div>
@@ -159,28 +191,28 @@
                             <div class="collapse show">
                                 <div class="card-body">
                                     <div class="col col-sm-6">
-                                        <input type="checkbox" value="Pentium"> Pentium
+                                        <input type="checkbox" name="type" value="Pentium"> Pentium
                                     </div>
                                     <div class="col col-sm-6">
-                                        <input type="checkbox" value="Core i3"> Core i3
+                                        <input type="checkbox" name="type" value="Core i3"> Core i3
                                     </div>
                                     <div class="col col-sm-6">
-                                        <input type="checkbox" value="Core i5"> Core i5
+                                        <input type="checkbox" name="type" value="Core i5"> Core i5
                                     </div>
                                     <div class="col col-sm-6">
-                                        <input type="checkbox" value="Core i7"> Core i7
+                                        <input type="checkbox" name="type" value="Core i7"> Core i7
                                     </div>
                                     <div class="col col-sm-6">
-                                        <input type="checkbox" value="Core i9"> Core i9
+                                        <input type="checkbox" name="type" value="Core i9"> Core i9
                                     </div>
                                     <div class="col col-sm-6">
-                                        <input type="checkbox" value="Xeon"> Xeon
+                                        <input type="checkbox" name="type" value="Xeon"> Xeon
                                     </div>
                                     <div class="col col-sm-6">
-                                        <input type="checkbox" value="Ryzen 5"> Ryzen 5
+                                        <input type="checkbox" name="type" value="Ryzen 5"> Ryzen 5
                                     </div>
                                     <div class="col col-sm-6">
-                                        <input type="checkbox" value="Ryzen 7"> Ryzen 7
+                                        <input type="checkbox" name="type" value="Ryzen 7"> Ryzen 7
                                     </div>
                                 </div>
                             </div>
@@ -198,7 +230,7 @@
                                         <c:forEach var="socket" items="${socketList}">
                                             <c:if test="${not empty socket}">
                                                 <div class="col col-sm-12">
-                                                    <input type="checkbox" value="${socket}"> ${socket}
+                                                    <input type="checkbox" name="socket" value="${socket}"> ${socket}
                                                 </div>
                                             </c:if>
                                         </c:forEach>
@@ -219,7 +251,7 @@
                                         <c:forEach var="noOfCores" items="${noOfCoresList}">
                                             <c:if test="${not empty noOfCores}">
                                                 <div class="col col-sm-6">
-                                                    <input type="checkbox" value="${noOfCores}"> ${noOfCores}
+                                                    <input type="checkbox" name="no-of-cores" value="${noOfCores}"> ${noOfCores}
                                                 </div>
                                             </c:if>
                                         </c:forEach>
@@ -231,102 +263,11 @@
                 </div>
                 <div class="col col-sm-9">
                     <div class="row" id="list-content">
-                        <div class="col col-sm-12">
-                            <div class="alert bg-light" role="alert">
-                                <span style="font-size: 1.3rem"><b>Danh sách sản phẩm</b></span>
-                            </div>
-                        </div>
-                        <c:forEach var="product" items="${productList}">
-                            <div class="col col-sm-3">
-                                <div class="card">
-                                    <c:set var="cpuName" value="${product.name}" />
-                                    <c:if test="${not empty cpuName}">
-                                        <c:choose>
-                                            <c:when test="${fn:contains(cpuName, 'Intel')}">
-                                                <img class="card-img-top" src="/img/1200px-Intel-logo.svg.png">
-                                            </c:when>
-                                            <c:when test="${fn:contains(cpuName, 'AMD')}">
-                                                <img class="card-img-top" src="/img/AMD-red-white-logo.png">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <i class="fas fa-question"></i>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:if>
-                                    <div class="card-body">
-                                        <a href="#" class="product-name">
-                                            <p class="card-text" style="font-size: 13px">
-                                                <c:set var="clockspeed" value="${product.clockspeed}" />
-                                                <c:set var="turbospeed" value="${product.turbospeed}" />
-                                                Bộ vi xử lý ${product.name}
-                                                <c:if test="${not empty clockspeed}">(${clockspeed} GHz<c:if
-                                                        test="${not empty turbospeed}">/${turbospeed} GHz</c:if>)</c:if>
-                                            </p>
-                                        </a>
-                                        <div class="product-action">
-                                            <a href="#" class="benchmark">
-                                                <b>Điểm: </b>
-                                                <b class="result">${product.benchmark}</b>
-                                            </a>
-                                            <br />
-                                            <a href="#" class="price">
-                                                <b>Giá: </b>
-                                                <b class="result">
-                                                    <c:forEach var="i" items="${product.shops}">
-                                                        <c:forEach var="j" items="${product.shops}">
-                                                            <c:if test="${i.price le j.price}">
-                                                                <c:set var="min" value="${i.price}" />
-                                                            </c:if>
-                                                        </c:forEach>
-                                                    </c:forEach>
-                                                    <fmt:formatNumber var="min" type="number" maxFractionDigits="3"
-                                                                      value="${min}" />
-                                                        ${fn:replace(min, ',', '.')} <c:if
-                                                        test="${not empty min}">₫</c:if>
-                                                    <c:set var="min" value="" />
-                                                </b>
-                                            </a>
-                                            <a href="#" class="btn btn-main-blue col-sm-12">
-                                                So sánh <i class="fas fa-plus"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </c:forEach>
+
                     </div>
-                    <c:if test="${not empty productList}">
-                        <nav aria-label="paging" class="row justify-content-md-center">
-                            <ul class="pagination col-md-auto">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-double-left"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-left"></i>
-                                    </a>
-                                </li>
-                                <c:set var="end" value="${page.totalPages gt 5 ? 5 : page.totalPages}" />
-                                <c:forEach var="i" begin="1" end="${end}" varStatus="counter">
-                                    <li class="page-item <c:if test="${i eq page.number + 1}">active</c:if>">
-                                        <a class="page-link" href="i"><c:out value="${i}"></c:out></a>
-                                    </li>
-                                </c:forEach>
-                                <li class="page-item <c:if test="${page.last}">disabled</c:if>">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-right"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item <c:if test="${page.last}">disabled</c:if>">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-double-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </c:if>
+                    <nav class="col col-sm-12 row justify-content-md-center">
+                        <ul class="pagination col-md-auto"></ul>
+                    </nav>
                 </div>
             </div>
         </div>

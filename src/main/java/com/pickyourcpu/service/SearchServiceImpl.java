@@ -2,19 +2,26 @@ package com.pickyourcpu.service;
 
 import com.pickyourcpu.dto.SearchCreateriaDTO;
 import com.pickyourcpu.entity.Product;
+import com.pickyourcpu.entity.Shop;
+import com.pickyourcpu.jaxb.ProductJAXB;
+import com.pickyourcpu.jaxb.ProductsJAXB;
 import com.pickyourcpu.repository.ProductRepository;
 import com.pickyourcpu.repository.spec.ProductSpecification;
+import com.pickyourcpu.util.EntityToJAXB;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class SearchListServiceImpl implements SearchListService {
+public class SearchServiceImpl implements SearchService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -26,11 +33,8 @@ public class SearchListServiceImpl implements SearchListService {
 
         int pageNum = searchCreateriaDTO.getPage() - 1;
         int size = searchCreateriaDTO.getMaxSize();
-        Sort.Direction sort = Sort.Direction.ASC;
-        if ( searchCreateriaDTO.getSort().equals( "DESC" ) ) sort = Sort.Direction.DESC;
-        String field = searchCreateriaDTO.getField();
 
-        Pageable pageable = new PageRequest( pageNum, size, sort, field );
+        Pageable pageable = new PageRequest( pageNum, size );
         Page<Product> page = productRepository.findAll( spec, pageable );
         return page;
     }
@@ -43,5 +47,18 @@ public class SearchListServiceImpl implements SearchListService {
     @Override
     public List<String> getSocketList() {
         return productRepository.findDistinctSocket();
+    }
+
+    @Override
+    public Product getProductDetail( Long id ) {
+        Product product = productRepository.findProductById( id );
+        Collections.sort( product.getShops(), Comparator.comparing( Shop::getPrice ) );
+        return product;
+    }
+
+    @Override
+    public ProductsJAXB getTop5ProductNameLike( String name ) {
+        if ( StringUtils.isBlank( name ) ) return new ProductsJAXB();
+        return EntityToJAXB.parseListProductToProductsJAXB( productRepository.findTop5ByNameLike( "%" + name + "%" ) );
     }
 }
