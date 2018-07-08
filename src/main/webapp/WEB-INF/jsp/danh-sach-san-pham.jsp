@@ -23,7 +23,7 @@
         <nav class="navbar navbar-expand-sm py-3" id="nav-1">
             <div class="container">
                 <a class="navbar-brand" href="#">
-                    <img src="./img/logo.png" class="d-inline-block align-top" alt="">
+                    <img src="/img/logo.png" class="d-inline-block align-top" alt="">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -34,7 +34,23 @@
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav mr-auto">
                     </ul>
-                    <button id="to-login-page" type="button" class="btn btn-outline-main-blue mr-2">Đăng nhập</button>
+                    <c:if test="${empty pageContext.request.userPrincipal.name}">
+                        <form class="form-inline mt-3" action="/dang-nhap">
+                            <button id="to-login-page" type="submit" class="btn btn-outline-main-blue mr-2">Đăng nhập
+                            </button>
+                        </form>
+                    </c:if>
+                    <c:if test="${not empty pageContext.request.userPrincipal.name}">
+                        <p class="mt-3 mr-2" style="color: #1E68CB">Xin chào <b>${pageContext.request.userPrincipal.name}</b></p>
+                        <form class="form-inline mt-3" action="/quan-tri-vien/crawl">
+                            <button id="to-admin-page" type="submit" class="btn btn-outline-main-blue mr-2">Đến trang của quản trị viên
+                            </button>
+                        </form>
+                        <form class="form-inline mt-3" action="/dang-xuat">
+                            <button id="logout" type="submit" class="btn btn-outline-main-blue mr-2">Đăng xuất
+                            </button>
+                        </form>
+                    </c:if>
                     <form class="form-inline">
                         <div class="input-group input-group-sm mt-3">
                             <input type="text" placeholder="CPU name" id="search-input" class="form-control"

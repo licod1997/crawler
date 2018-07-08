@@ -32,9 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure( HttpSecurity http ) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers( "/**" ).permitAll()
+                .antMatchers( "/*" ).permitAll()
                 .antMatchers( "/quan-tri-vien/**" ).hasRole( "ADMIN" )
                 .and()
+                .csrf().disable()
                 .formLogin()
                 .loginPage( "/dang-nhap" )
                 .usernameParameter( "username" )

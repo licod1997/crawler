@@ -53,6 +53,7 @@ public class Crawler implements Runnable {
 
     private volatile boolean flag = false;
     private boolean breakCondition = false;
+    private int result;
 
     public boolean isFlag() {
         return flag;
@@ -60,6 +61,10 @@ public class Crawler implements Runnable {
 
     public void setFlag( boolean flag ) {
         this.flag = flag;
+    }
+
+    public int getResult() {
+        return result;
     }
 
     public void stopCrawling() {
@@ -207,6 +212,7 @@ public class Crawler implements Runnable {
                             InputStream isDetail = preprocessCPUBenchmarkDetail( htmlDetail );
                             Product product = parseCPUBenchmarkDetail( isDetail );
                             list.add( product );
+                            this.result = list.size();
                         }
                         //end
                         inProductTag = false;
@@ -354,7 +360,7 @@ public class Crawler implements Runnable {
 
             boolean inProductTag = false;
 
-            while ( reader.hasNext() && flag ) {
+            while ( reader.hasNext() ) {
                 XMLEvent event = reader.nextEvent();
 
                 if ( event.isStartElement() ) {
@@ -420,7 +426,7 @@ public class Crawler implements Runnable {
 
             boolean inProductTag = false;
 
-            while ( reader.hasNext() && flag ) {
+            while ( reader.hasNext() ) {
                 XMLEvent event = reader.nextEvent();
 
                 if ( event.isStartElement() ) {
@@ -537,10 +543,13 @@ public class Crawler implements Runnable {
     public void run() {
         this.flag = true;
         this.breakCondition = false;
+        this.result = 0;
         int i = 1;
 
+        System.out.println( "Starting" );
+
         List<Product> productList = parseCPUBenchmark( preProcessCPUBenchmark( URIResolver( URLEnum.CPUBENCHMARK_1.getUrl() ) ) );
-        productList.addAll( parseCPUBenchmark( preProcessCPUBenchmark( URIResolver( URLEnum.CPUBENCHMARK_2.getUrl() ) ) ) );
+//        productList.addAll( parseCPUBenchmark( preProcessCPUBenchmark( URIResolver( URLEnum.CPUBENCHMARK_2.getUrl() ) ) ) );
 
         List<Product> productShopList = new ArrayList<>();
 

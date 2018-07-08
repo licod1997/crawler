@@ -261,10 +261,6 @@ _( document ).ready( function () {
         collapse( '#card-5' );
     } );
 
-    _( '#to-login-page' ).on( 'click', function () {
-       window.location.href = '/dang-nhap';
-    } );
-
     var searchXML, searchXSL;
 
     _.ajax( {

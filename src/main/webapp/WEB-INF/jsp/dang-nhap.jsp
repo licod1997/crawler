@@ -22,7 +22,9 @@
             <input type="text"  class="form-control" placeholder="Tài khoản" name="username" required=""
                    autofocus="">
             <input type="password" class="form-control" placeholder="Mật khẩu" name="password" required="">
-            <c:if test="${param.error}"><p>ERROR</p></c:if>
+            <c:if test="${param.error ne null}">
+                <p class="text-danger mt-3">Tài khoàn hoặc mật khẩu không đúng</p>
+            </c:if>
             <button class="btn btn-lg btn-main-blue btn-block" type="submit" value="Sign In">Đăng nhập</button>
         </form>
     </div>
