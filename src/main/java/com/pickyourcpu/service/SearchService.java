@@ -16,5 +16,5 @@ public interface SearchService {
 
     Product getProductDetail( Long id );
 
-    ProductsJAXB getTop5ProductNameLike( String name );
+    ProductsJAXB getTop10ProductNameLike( String name );
 }

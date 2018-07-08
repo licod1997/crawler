@@ -1,4 +1,4 @@
-package com.pickyourcpu.crawler;
+package com.pickyourcpu.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;

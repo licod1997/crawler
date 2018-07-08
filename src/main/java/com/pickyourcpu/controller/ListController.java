@@ -20,7 +20,7 @@ public class ListController {
     @Autowired
     private SearchService searchService;
 
-    @GetMapping( value = "/danh-sach-san-pham" )
+    @GetMapping( value = {"/danh-sach-san-pham", "/"} )
     public ModelAndView getListPage( ModelAndView mv ) {
         mv.setViewName( "danh-sach-san-pham" );
         mv.addObject( "socketList", searchService.getSocketList() );

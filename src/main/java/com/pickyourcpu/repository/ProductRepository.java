@@ -22,7 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     Product findProductById( Long id );
 
-    List<Product> findTop5ByNameLike( String name );
+    List<Product> findTop10ByNameLike( String name );
 
     default List<Product> saveListProducts( List<Product> products ) {
         List<Product> result = new ArrayList<>();

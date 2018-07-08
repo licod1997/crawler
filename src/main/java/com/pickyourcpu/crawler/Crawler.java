@@ -5,6 +5,9 @@ import com.pickyourcpu.entity.Shop;
 import com.pickyourcpu.enu.URLEnum;
 import com.pickyourcpu.jaxb.ProductsJAXB;
 import com.pickyourcpu.repository.ProductRepository;
+import com.pickyourcpu.util.CrawlHelper;
+import com.pickyourcpu.util.EntityToJAXB;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +45,6 @@ import java.util.stream.Collectors;
 public class Crawler implements Runnable {
 
     private final ProductRepository productRepository;
-    private long genProductId = 0;
 
     @Autowired
     public Crawler( ProductRepository productRepository ) {
@@ -50,6 +52,7 @@ public class Crawler implements Runnable {
     }
 
     private volatile boolean flag = false;
+    private boolean breakCondition = false;
 
     public boolean isFlag() {
         return flag;
@@ -66,7 +69,7 @@ public class Crawler implements Runnable {
     public String selfClosingTag( String str, String tag ) {
         StringBuffer sb = new StringBuffer();
 
-        Pattern imgPattern = Pattern.compile( "(<" + tag + ".*?)>" );
+        Pattern imgPattern = Pattern.compile( "(<" + tag + "(.|\n)*?)>" );
         Matcher imgMatcher = imgPattern.matcher( str );
 
         while ( imgMatcher.find() ) {
@@ -99,13 +102,15 @@ public class Crawler implements Runnable {
         //get necessary part of html
         int start = rawString.indexOf( "<div id=\"mark\"" );
         int end = rawString.indexOf( "<div id=\"value\"" );
-        rawString = rawString.substring( start, end );
         //end
 
-        //replace tags which leading exception
-        rawString = rawString.replaceAll( "<br>", "" )
-                .replaceAll( "<BR>", "" );
-        //end
+        if ( start > -1 && end > -1 ) {
+            rawString = rawString.substring( start, end );
+            //replace tags which leading exception
+            rawString = rawString.replaceAll( "<br>", "" )
+                    .replaceAll( "<BR>", "" );
+            //end
+        }
         return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
     }
 
@@ -119,16 +124,18 @@ public class Crawler implements Runnable {
         Matcher endMatcher = endPattern.matcher( rawString );
         endMatcher.find();
         int end = endMatcher.start();
-        rawString = rawString.substring( start, end );
         //end
 
-        //replace tags which leading exception
-        Pattern p = Pattern.compile( "[^\\u0009\\u000A\\u000D\u0020-\\uD7FF\\uE000-\\uFFFD\\u10000-\\u10FFF]+" );
-        rawString = p.matcher( rawString ).replaceAll( "" );
-        rawString = rawString.replaceAll( "<br>", "" )
-                .replaceAll( "<BR>", "" )
-                .replaceAll( " & ", " &amp; " );
-        //end
+        if ( start > -1 && end > -1 ) {
+            rawString = rawString.substring( start, end );
+            //replace tags which leading exception
+            Pattern p = Pattern.compile( "[^\\u0009\\u000A\\u000D\u0020-\\uD7FF\\uE000-\\uFFFD\\u10000-\\u10FFF]+" );
+            rawString = p.matcher( rawString ).replaceAll( "" );
+            rawString = rawString.replaceAll( "<br>", "" )
+                    .replaceAll( "<BR>", "" )
+                    .replaceAll( " & ", " &amp; " );
+            //end
+        }
         return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
     }
 
@@ -136,21 +143,27 @@ public class Crawler implements Runnable {
         int start = rawString.indexOf( "<div class=\"tygh-content clearfix\">" );
         int end = rawString.indexOf( "<div class=\"tygh-footer clearfix\" id=\"tygh_footer\">" );
 
-        rawString = rawString.substring( start, end );
+        if ( start > -1 && end > -1 ) {
+            rawString = rawString.substring( start, end );
 
-        rawString = rawString.replaceAll( "®", "" )
-                .replaceAll( "™", "" )
-                .replaceAll( "itemscope", "" )
-                .replaceAll( "</strong>", "" )
-                .replaceAll( "&nbsp;", "" );
-
-        try ( Writer writer = new FileWriter( "src/main/xml/data3.html" ) ) {
-            writer.write( rawString );
-            writer.flush();
-        } catch ( IOException e ) {
-            e.printStackTrace();
+            rawString = rawString.replaceAll( "®", "" )
+                    .replaceAll( "™", "" )
+                    .replaceAll( "itemscope", "" )
+                    .replaceAll( "</strong>", "" )
+                    .replaceAll( "&nbsp;", "" );
         }
 
+        return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
+    }
+
+    public InputStream preprocessPhongVu( String rawString ) {
+        int start = rawString.indexOf( "<div class=\"row grid-view\">" );
+        int end = rawString.indexOf( "<div class=\"list-view header-hidden\">" );
+
+        if ( start > -1 && end > -1 ) {
+            rawString = rawString.substring( start, end );
+            rawString = selfClosingTag( rawString, "img" );
+        }
         return new ByteArrayInputStream( rawString.getBytes( StandardCharsets.UTF_8 ) );
     }
 
@@ -267,7 +280,7 @@ public class Crawler implements Runnable {
                                         .replaceAll( "Socket", "" )
                                         .replaceAll( "FC-BGA", "" )
                                         .replaceAll( "LGA2011-3", "LGA2011-v3" )
-                                        .replaceAll( " ", "" ));
+                                        .replaceAll( " ", "" ) );
                             }
                             if ( clockspeedMatcher.find() ) {
                                 product.setClockspeed( NumberUtils.toDouble( clockspeedMatcher.group( 1 ).trim() ) );
@@ -324,7 +337,6 @@ public class Crawler implements Runnable {
         } catch ( UnsupportedEncodingException e ) {
             e.printStackTrace();
         }
-        System.out.println( product );
         return product;
     }
 
@@ -393,6 +405,76 @@ public class Crawler implements Runnable {
         return list;
     }
 
+    public List<Product> parsePhongVu( InputStream is ) {
+        XMLInputFactory factory = XMLInputFactory.newFactory();
+        factory.setProperty( XMLInputFactory.IS_VALIDATING, false );
+        factory.setProperty( XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false );
+
+        XMLEventReader reader;
+        List<Product> list = new ArrayList<>();
+        Product product = new Product();
+        Shop shop = new Shop();
+
+        try {
+            reader = factory.createXMLEventReader( new InputStreamReader( is, "UTF-8" ) );
+
+            boolean inProductTag = false;
+
+            while ( reader.hasNext() && flag ) {
+                XMLEvent event = reader.nextEvent();
+
+                if ( event.isStartElement() ) {
+                    StartElement element = (StartElement) event;
+
+                    if ( element.getName().toString().equals( "a" ) ) {
+                        Attribute attrClass = element.getAttributeByName( new QName( "class" ) );
+
+                        if ( attrClass != null && attrClass.getValue().equals( "col-xs-3 grid-view-item deal-mix" ) ) {
+                            inProductTag = true;
+                        }
+
+                        if ( inProductTag ) {
+                            Attribute attrUrl = element.getAttributeByName( new QName( "href" ) );
+                            if ( attrUrl != null ) {
+                                shop.setUrl( attrUrl.getValue() );
+                            }
+
+                            Attribute attrName = element.getAttributeByName( new QName( "data-name" ) );
+                            if ( attrName != null ) {
+                                Pattern p = Pattern.compile( "Bộ vi xử lý(\\s)*/ CPU((.*?)(\\(.*?\\))|(.*))" );
+                                Matcher m = p.matcher( attrName.getValue() );
+                                if ( m.find() ) {
+                                    if ( StringUtils.isBlank( m.group( 3 ) ) ) {
+                                        product.setName( m.group( 2 ).trim() );
+                                    } else {
+                                        product.setName( m.group( 3 ).trim() );
+                                    }
+                                }
+                            }
+
+                            Attribute attrPrice = element.getAttributeByName( new QName( "data-price" ) );
+                            if ( attrPrice != null ) {
+                                shop.setPrice( new BigDecimal( attrPrice.getValue() ).setScale( 0, BigDecimal.ROUND_CEILING ) );
+                            }
+                            product.getShops().add( shop );
+                            list.add( product );
+                            shop = new Shop();
+                            product = new Product();
+                            inProductTag = false;
+                        }
+                    }
+                }
+            }
+
+        } catch ( XMLStreamException e ) {
+            e.printStackTrace();
+        } catch ( UnsupportedEncodingException e ) {
+            e.printStackTrace();
+        }
+        if ( list.size() < 20 ) this.breakCondition = true;
+        return list;
+    }
+
     public String readElementBody( XMLEventReader reader ) {
         StringWriter writer = new StringWriter();
         int depth = 0;
@@ -451,24 +533,34 @@ public class Crawler implements Runnable {
         return false;
     }
 
-    public void sm() {
+    @Override
+    public void run() {
         this.flag = true;
+        this.breakCondition = false;
+        int i = 1;
 
-        String html1 = URIResolver( URLEnum.CPUBENCHMARK_1.getUrl() );
-        InputStream is1 = preProcessCPUBenchmark( html1 );
-        String html = URIResolver( URLEnum.LONGBINH.getUrl() );
-        InputStream is = preprocessLongBinh( html );
+        List<Product> productList = parseCPUBenchmark( preProcessCPUBenchmark( URIResolver( URLEnum.CPUBENCHMARK_1.getUrl() ) ) );
+        productList.addAll( parseCPUBenchmark( preProcessCPUBenchmark( URIResolver( URLEnum.CPUBENCHMARK_2.getUrl() ) ) ) );
 
-        List<Product> productList = parseCPUBenchmark( is1 );
-        List<Product> productShopList = parseLongBinh( is );
+        List<Product> productShopList = new ArrayList<>();
 
-        ProductsJAXB productsJAXB = new ProductsJAXB();
+        while ( !breakCondition ) {
+            String html2 = URIResolver( URLEnum.PHONGVU.getUrl() + "?p=" + i++ );
+            InputStream is2 = preprocessPhongVu( html2 );
+            productShopList.addAll( parsePhongVu( is2 ) );
+        }
 
         for ( Product product : productList ) {
             for ( Product tempProduct : productShopList ) {
                 if ( CrawlHelper.computeMatchingDensity(
-                        product.getName().replaceAll( " ", "" ).toLowerCase(),
-                        tempProduct.getName().replaceAll( " ", "" ).toLowerCase() ) == 100 ) {
+                        product.getName()
+                                .replaceAll( "\\s", "" )
+                                .replaceAll( "-", "" )
+                                .toLowerCase(),
+                        tempProduct.getName()
+                                .replaceAll( "\\s", "" )
+                                .replaceAll( "-", "" )
+                                .toLowerCase() ) == 100 ) {
                     List<Shop> shopList = tempProduct.getShops();
                     for ( Shop shop : shopList ) {
                         shop.setProduct( product );
@@ -477,43 +569,9 @@ public class Crawler implements Runnable {
                 }
             }
         }
-        productRepository.saveListProducts( productList );
-    }
 
-    @Override
-    public void run() {
-        this.flag = true;
-
-        String html1 = URIResolver( URLEnum.CPUBENCHMARK_1.getUrl() );
-        InputStream is1 = preProcessCPUBenchmark( html1 );
-        String html = URIResolver( URLEnum.LONGBINH.getUrl() );
-        InputStream is = preprocessLongBinh( html );
-
-        List<Product> productList = parseCPUBenchmark( is1 );
-        List<Product> productShopList = parseLongBinh( is );
-
-        ProductsJAXB productsJAXB = new ProductsJAXB();
-
-        for ( Product product : productList ) {
-            for ( Product tempProduct : productShopList ) {
-                if ( CrawlHelper.computeMatchingDensity( product.getName(), tempProduct.getName() ) == 100 ) {
-                    product.getShops().addAll( tempProduct.getShops() );
-                }
-            }
+        if ( validateXML( transformXML( EntityToJAXB.parseListProductToProductsJAXB( productShopList ) ), EntityToJAXB.parseListProductToProductsJAXB( productShopList ) ) ) {
+            productRepository.saveListProducts( productList );
         }
-//
-//        try (Writer writer = new FileWriter( "src/main/xml/something.txt" )){
-//            writer.write( productList.toString() );
-//            writer.flush();
-//        } catch ( Exception e ) {
-//            e.printStackTrace();
-//        }
-
-//        System.out.println("DONE");
-//        productsJAXB.getProduct().addAll( parseCPUBenchmark( is1 ) );
-//
-//        if ( validateXML( transformXML( productsJAXB ), productsJAXB ) ) {
-        productRepository.saveListProducts( productList );
-//        }
     }
 }

@@ -13,7 +13,7 @@ _( document ).ready( function () {
         price: null,
     }
 
-    var xml, xsl;
+    var xml, xsl, compareXML;
 
     _.ajax( {
         url: 'http://localhost:8080/xsl/danh-sach-san-pham.xsl',
@@ -82,6 +82,7 @@ _( document ).ready( function () {
             getList();
             displayResult( xml, xsl );
             resolvePaging();
+            addCompareProductEvent();
         }
     }
 
@@ -199,22 +200,25 @@ _( document ).ready( function () {
     }
 
     function addCompareProductEvent() {
-        var compares = _( '#list-content' ).html().querySelectorAll( '.compare' );
+        var adds = document.querySelectorAll( '.compare' );
         var i;
 
-        for ( i = 0; i < compares.length; i++ ) {
-            compares[i].addEventListener( 'click', function () {
-                _.ajax( {
-                    url: 'http://localhost:8080/them-san-pham-vao-so-sanh?id=' + this.getAttribute( 'value' ),
-                    method: 'GET',
-                    async: false,
-                    success: function ( xhr ) {
+        for ( i = 0; i < adds.length; i++ ) {
+            adds[i].addEventListener( 'click', function () {
+                if ( compareXML == null || compareXML.getElementsByTagName( 'product' ).length < 4 ) {
+                    _.ajax( {
+                        url: 'http://localhost:8080/them-san-pham-vao-so-sanh.xml?id=' + this.getAttribute( 'value' ),
+                        method: 'GET',
+                        async: false,
+                        success: function ( xhr ) {
+                            compareXML = xhr.responseXML;
+                            numberOfComparingProduct( compareXML );
+                        },
+                        error: function () {
 
-                    },
-                    error: function () {
-
-                    }
-                } );
+                        }
+                    } );
+                }
             } );
         }
     }
@@ -257,14 +261,88 @@ _( document ).ready( function () {
         collapse( '#card-5' );
     } );
 
+    _( '#to-login-page' ).on( 'click', function () {
+       window.location.href = '/dang-nhap';
+    } );
+
+    var searchXML, searchXSL;
+
+    _.ajax( {
+        url: 'http://localhost:8080/xsl/top-10-san-pham.xsl',
+        method: 'GET',
+        async: false,
+        success: function ( xhr ) {
+            searchXSL = xhr.responseXML;
+        },
+        error: function () {
+
+        }
+    } );
+
+    function getSearchList( value ) {
+        _.ajax( {
+            url: 'http://localhost:8080/goi-y-san-pham.xml?name=' + value,
+            method: 'GET',
+            async: false,
+            success: function ( xhr ) {
+                searchXML = xhr.responseXML;
+
+            },
+            error: function () {
+
+            }
+        } );
+    }
+
+    function displaySearchResult( xml, xsl ) {
+        if ( document.implementation && document.implementation.createDocument ) {
+            var xsltProcessor = new XSLTProcessor();
+            xsltProcessor.importStylesheet( xsl );
+            var resultDocument = xsltProcessor.transformToFragment( xml, document );
+            var displayer = _( '#suggest-list' ).html();
+            displayer.innerHTML = '';
+            displayer.appendChild( resultDocument );
+            var dropdown = _( '#suggest-list .dropdown-menu' ).html();
+            if ( dropdown != null ) {
+                dropdown.style.display = 'block';
+                dropdown.style.transition = 'display 10s ease-in-out';
+            }
+        }
+    }
+
+    _( '#search-input' ).on( 'keyup', function () {
+        getSearchList( this.value );
+        displaySearchResult( searchXML, searchXSL );
+    } );
+
+    _( '#to-compare-page' ).on( 'click', function () {
+        window.location.href = '/so-sanh-san-pham';
+    } );
+
+    function triggerDropdown() {
+        var drops = _( '#nav-2' ).html().querySelectorAll( '.dropdown' );
+        var i;
+
+        for ( i = 0; i < drops.length; i++ ) {
+            drops[i].addEventListener( 'mouseover', function () {
+                this.querySelector( '.dropdown-menu' ).classList.remove( 'show' );
+                this.querySelector( '.dropdown-menu' ).classList.add( 'show' );
+            } );
+            drops[i].addEventListener( 'mouseout', function () {
+                this.querySelector( '.dropdown-menu' ).classList.remove( 'show' );
+            } );
+        }
+    }
+
+    function numberOfComparingProduct( xml ) {
+        _( '#to-compare-page .badge' ).html().innerHTML = xml.getElementsByTagName( 'product' ).length;
+    }
+
     filter();
-
     getList();
-
     displayResult( xml, xsl );
-
     resolvePaging();
-
     addCompareProductEvent();
+    triggerDropdown();
 } );
 

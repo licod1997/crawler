@@ -57,8 +57,8 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public ProductsJAXB getTop5ProductNameLike( String name ) {
+    public ProductsJAXB getTop10ProductNameLike( String name ) {
         if ( StringUtils.isBlank( name ) ) return new ProductsJAXB();
-        return EntityToJAXB.parseListProductToProductsJAXB( productRepository.findTop5ByNameLike( "%" + name + "%" ) );
+        return EntityToJAXB.parseListProductToProductsJAXB( productRepository.findTop10ByNameLike( "%" + name + "%" ) );
     }
 }

@@ -1,6 +1,7 @@
 package com.pickyourcpu.controller;
 
 import com.pickyourcpu.service.SearchService;
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +15,8 @@ public class DetailController {
 
     @GetMapping( value = "chi-tiet-san-pham" )
     public ModelAndView getProductDetail( @RequestParam( value = "id", defaultValue = "0" ) Long id,
-                                          ModelAndView mv ) {
+                                          ModelAndView mv,
+                                          HttpServletRequest req) {
         mv.setViewName( "chi-tiet-san-pham" );
         mv.addObject( "product", searchService.getProductDetail( id ) );
         return mv;

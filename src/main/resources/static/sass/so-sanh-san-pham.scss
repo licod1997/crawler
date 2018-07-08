@@ -10,6 +10,31 @@
   height: 191.75px;
 }
 
+table tr:first-child {
+  min-height: 217px;
+}
+
 td.product-detail {
   padding: 0;
+}
+
+.result {
+  position: relative;
+
+  .close-button {
+    position: absolute;
+    margin-left: 175px;
+    margin-top: -191px;
+
+    i {
+      transition: color .15s ease-in-out,
+      font-size .15s ease-in-out;
+    }
+
+    i:hover {
+      font-size: 18px;
+      cursor: pointer;
+      color: #000000;
+    }
+  }
 }

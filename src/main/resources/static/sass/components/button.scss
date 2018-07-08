@@ -21,3 +21,16 @@
     background-color: $main-red-hover;
     border-color: $main-red-hover;
 }
+
+.btn-outline-main-blue {
+    color: $main-blue;
+    background-color: transparent;
+    background-image: none;
+    border-color: $main-blue;
+}
+
+.btn-outline-main-blue:hover {
+    color: #fff;
+    background-color: $main-blue;
+    background-image: none;
+}

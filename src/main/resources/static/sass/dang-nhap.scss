@@ -1,0 +1,13 @@
+@import "./components/color.scss";
+@import "./components/button.scss";
+@import "./templates/body";
+@import "./templates/header.scss";
+@import "./templates/content.scss";
+@import "./templates/footer.scss";
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}

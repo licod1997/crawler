@@ -15,7 +15,7 @@ public class SuggestController {
     @GetMapping( value = "/goi-y-san-pham.xml",
             produces = "application/xml" )
     public ProductsJAXB suggestProduct( @RequestParam( value = "name", defaultValue = "" ) String name ) {
-        return searchService.getTop5ProductNameLike( name );
+        return searchService.getTop10ProductNameLike( name );
     }
 
 }

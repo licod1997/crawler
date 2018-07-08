@@ -12,7 +12,7 @@
 <html>
 <head>
     <title>Chi tiết sản phẩm</title>
-
+    <meta name="referrer" content="no-referrer" />
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="/css/fontawesome/css/fontawesome-all.min.css" />
     <link rel="stylesheet" href="/css/chi-tiet-san-pham.css">
@@ -38,8 +38,7 @@
                     </ul>
                     <form class="form-inline">
                         <div class="input-group input-group-sm mt-3">
-                            <input type="text" placeholder="CPU name" class="form-control"
-                                   aria-describedby="basic-addon2">
+                            <input type="text" class="form-control" placeholder="CPU name" id="search-input" value="">
                             <div class="input-group-append">
                                 <button class="btn btn-main-blue" type="button">
                                     <i class="fas fa-search"></i>
@@ -68,23 +67,26 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">HOME</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item dropdown active">
+                            <a class="nav-link" href="/danh-sach-san-pham" id="navbarDropdown" role="button"
+                               data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false">
                                 CPUs
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Intel</a>
+                                <a class="dropdown-item" href="/danh-sach-san-pham?manufacture=Intel">Intel</a>
+                                <a class="dropdown-item" href="/danh-sach-san-pham?manufacture=AMD">AMD</a>
                             </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">ABOUT</a>
                         </li>
                     </ul>
+                    <button class="btn btn-main-blue my-2 my-sm-0" id="to-compare-page">
+                        <i class="fas fa-balance-scale"></i> <span
+                            class="badge badge-light">${fn:length(sessionScope.COMPARE.product)}</span>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -161,6 +163,13 @@
                         <div class="col col-sm-4" id="final-score">
                             <b>ĐIỂM: ${product.benchmark}</b>
                         </div>
+                        <div class="col col-sm-12 row justify-content-md-center">
+                            <div class="col col-sm-3">
+                                <button class="btn btn-main-blue col-sm-12 compare" value="${product.id}">
+                                    So sánh <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col col-sm-12">
@@ -180,8 +189,15 @@
                                             <img height="40px"
                                                  src="http://longbinh.com.vn/images/logos/36/longbinh_logo.png" />
                                         </c:if>
+                                        <c:if test="${fn:contains(shop.url, 'phongvu')}">
+                                            <img height="40px"
+                                                 src="https://phongvu.vn/skin/frontend/default/tek_v2/images/phongvu-v3/logo.png" />
+                                        </c:if>
                                     </td>
-                                    <td>${shop.price}</td>
+                                    <td class="align-middle">
+                                        <fmt:formatNumber var="price" pattern="###,###" value="${shop.price}" />
+                                        <c:out value="${fn:replace(price, ',', '.')}" /> ₫
+                                    </td>
                                     <td>
                                         <a class="btn btn-main-blue shopping" href="${shop.url}">
                                             Mua ngay
@@ -208,20 +224,28 @@
                 <div class="col col-sm-6">
                     <div class="row">
                         <div class="col col-sm-12">
-                            <p class="text-light"><b>CPUs</b></p>
+                            <p class="text-light">
+                                <b>
+                                    <a class="text-light" href="/danh-sach-san-pham">CPUs</a>
+                                </b>
+                            </p>
                         </div>
                         <div class="col col-sm-12">
-                            <a class="text-light" href="#">Intel</a>
+                            <a class="text-light" href="/danh-sach-san-pham?manufacture=Intel">Intel</a>
                         </div>
                         <div class="col col-sm-12">
-                            <a class="text-light" href="#">AMD</a>
+                            <a class="text-light" href="/danh-sach-san-pham?manufacture=AMD">AMD</a>
                         </div>
                     </div>
                 </div>
                 <div class="col col-sm-6">
                     <div class="row">
                         <div class="col col-sm-12">
-                            <p class="text-light"><b>Info</b></p>
+                            <p class="text-light">
+                                <b>
+                                    <a class="text-light" href="#">Info</a>
+                                </b>
+                            </p>
                         </div>
                         <div class="col col-sm-12">
                             <a class="text-light" href="#">About Us</a>

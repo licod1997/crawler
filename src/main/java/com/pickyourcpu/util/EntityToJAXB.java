@@ -17,34 +17,39 @@ public class EntityToJAXB {
         ProductsJAXB productsJAXB = new ProductsJAXB();
 
         for ( Product product : productList ) {
-            ShopsJAXB shopsJAXB = new ShopsJAXB();
-
-            for ( Shop shop : product.getShops() ) {
-                shopsJAXB.getShop().add( new ShopJAXB(
-                        shop.getId(),
-                        shop.getUrl(),
-                        shop.getPrice()
-                ) );
-            }
-
-            Collections.sort( shopsJAXB.getShop(), Comparator.comparing( ShopJAXB::getPrice ) );
-
-            ProductJAXB productJAXB = new ProductJAXB(
-                    product.getId(),
-                    product.getName(),
-                    product.getBenchmark(),
-                    product.getSocket(),
-                    product.getClockspeed(),
-                    product.getTurbospeed(),
-                    product.getTDP(),
-                    product.getNoOfCores(),
-                    product.getCoresDescription(),
-                    product.getDescription(),
-                    shopsJAXB
-            );
-            productsJAXB.getProduct().add( productJAXB );
+            productsJAXB.getProduct().add( parseProductToProductJAXB(product) );
         }
 
         return productsJAXB;
+    }
+
+    public static ProductJAXB parseProductToProductJAXB(Product product) {
+        ShopsJAXB shopsJAXB = new ShopsJAXB();
+
+        for ( Shop shop : product.getShops() ) {
+            shopsJAXB.getShop().add( new ShopJAXB(
+                    shop.getId(),
+                    shop.getUrl(),
+                    shop.getPrice()
+            ) );
+        }
+
+        Collections.sort( shopsJAXB.getShop(), Comparator.comparing( ShopJAXB::getPrice ) );
+
+        ProductJAXB productJAXB = new ProductJAXB(
+                product.getId(),
+                product.getName(),
+                product.getBenchmark(),
+                product.getSocket(),
+                product.getClockspeed(),
+                product.getTurbospeed(),
+                product.getTDP(),
+                product.getNoOfCores(),
+                product.getCoresDescription(),
+                product.getDescription(),
+                shopsJAXB
+        );
+
+        return productJAXB;
     }
 }

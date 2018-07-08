@@ -23,4 +23,11 @@ public class ProductsJAXB {
     public void setProduct( List<ProductJAXB> product ) {
         this.product = product;
     }
+
+    @Override
+    public String toString() {
+        return "ProductsJAXB{" +
+                "product=" + product +
+                '}';
+    }
 }

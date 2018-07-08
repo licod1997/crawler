@@ -25,4 +25,11 @@ public class ShopsJAXB {
     public void setShop( List<ShopJAXB> shop ) {
         this.shop = shop;
     }
+
+    @Override
+    public String toString() {
+        return "ShopsJAXB{" +
+                "shop=" + shop +
+                '}';
+    }
 }

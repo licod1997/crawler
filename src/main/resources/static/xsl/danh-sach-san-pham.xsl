@@ -18,39 +18,53 @@
     <xsl:template match="p:response/p:products/p:product">
         <div class="col col-sm-3">
             <div class="card">
-                <xsl:choose>
-                    <xsl:when test="contains(p:name, 'Intel')">
-                        <img class="card-img-top" src="/img/1200px-Intel-logo.svg.png"/>
-                    </xsl:when>
-                    <xsl:when test="contains(p:name, 'AMD')">
-                        <img class="card-img-top" src="/img/AMD-red-white-logo.png"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <i class="fas fa-question"></i>
-                    </xsl:otherwise>
-                </xsl:choose>
+                <xsl:element name="a">
+                    <xsl:attribute name="href">
+                        /chi-tiet-san-pham?id=<xsl:value-of select="p:id"/>
+                    </xsl:attribute>
+                    <xsl:choose>
+                        <xsl:when test="contains(p:name, 'Intel')">
+                            <img class="card-img-top" src="/img/1200px-Intel-logo.svg.png"/>
+                        </xsl:when>
+                        <xsl:when test="contains(p:name, 'AMD')">
+                            <img class="card-img-top" src="/img/AMD-red-white-logo.png"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <i class="fas fa-question"></i>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:element>
                 <div class="card-body">
-                    <a href="#" class="product-name">
+                    <xsl:element name="a">
+                        <xsl:attribute name="class">product-name</xsl:attribute>
+                        <xsl:attribute name="href">
+                            /chi-tiet-san-pham?id=<xsl:value-of select="p:id"/>
+                        </xsl:attribute>
                         <p class="card-text" style="font-size: 13px">
                             Bộ vi xử lý
                             <xsl:value-of select="p:name"/>&#160;<xsl:if test="not(p:clockspeed = '')">(<xsl:value-of
-                                select="p:clockspeed"/> GHz
-                            <xsl:if test="not(p:turbospeed = '')">/<xsl:value-of select="p:turbospeed"/> GHz
-                            </xsl:if>
-                            )
+                                select="p:clockspeed"/> GHz<xsl:if test="not(p:turbospeed = '')">/<xsl:value-of select="p:turbospeed"/> GHz</xsl:if>)
                         </xsl:if>
                         </p>
-                    </a>
+                    </xsl:element>
                     <div class="product-action">
-                        <a href="#" class="benchmark">
-                            <b>Điểm:</b>
+                        <xsl:element name="a">
+                            <xsl:attribute name="class">benchmark</xsl:attribute>
+                            <xsl:attribute name="href">
+                                /chi-tiet-san-pham?id=<xsl:value-of select="p:id"/>
+                            </xsl:attribute>
+                            <b>Điểm: </b>
                             <b class="result">
                                 <xsl:value-of select="p:benchmark"/>
                             </b>
-                        </a>
+                        </xsl:element>
                         <br/>
-                        <a href="#" class="price">
-                            <b>Giá:</b>
+                        <xsl:element name="a">
+                            <xsl:attribute name="class">price</xsl:attribute>
+                            <xsl:attribute name="href">
+                                /chi-tiet-san-pham?id=<xsl:value-of select="p:id"/>
+                            </xsl:attribute>
+                            <b>Giá: </b>
                             <b class="result">
                                 <xsl:for-each select="p:shops/p:shop">
                                     <xsl:variable name="i" select="position()"/>
@@ -60,12 +74,12 @@
                                     </xsl:if>
                                 </xsl:for-each>
                             </b>
-                        </a>
+                        </xsl:element>
                         <xsl:element name="button">
                             <xsl:attribute name="class">btn btn-main-blue col-sm-12 compare</xsl:attribute>
                             <xsl:attribute name="value">
                                 <xsl:value-of select="p:id"/>
-                            </xsl:attribute>So sánh<i class="fas fa-plus"></i>
+                            </xsl:attribute>So sánh <i class="fas fa-plus"></i>
                         </xsl:element>
                     </div>
                 </div>

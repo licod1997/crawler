@@ -7,7 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
     <title>Danh sách sản phẩm</title>
@@ -34,14 +34,16 @@
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav mr-auto">
                     </ul>
+                    <button id="to-login-page" type="button" class="btn btn-outline-main-blue mr-2">Đăng nhập</button>
                     <form class="form-inline">
                         <div class="input-group input-group-sm mt-3">
-                            <input type="text" placeholder="CPU name" class="form-control"
+                            <input type="text" placeholder="CPU name" id="search-input" class="form-control"
                                    aria-describedby="basic-addon2">
                             <div class="input-group-append">
                                 <button class="btn btn-main-blue" type="button">
                                     <i class="fas fa-search"></i>
                                 </button>
+                                <div id="suggest-list"></div>
                             </div>
                         </div>
                     </form>
@@ -65,22 +67,25 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">HOME</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                        <li class="nav-item dropdown active">
+                            <a class="nav-link" href="/danh-sach-san-pham" id="navbarDropdown" role="button"
+                               data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false">
                                 CPUs
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Intel</a>
+                                <a class="dropdown-item" href="/danh-sach-san-pham?manufacture=Intel">Intel</a>
+                                <a class="dropdown-item" href="/danh-sach-san-pham?manufacture=AMD">AMD</a>
                             </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">ABOUT</a>
                         </li>
                     </ul>
+                    <button class="btn btn-main-blue my-2 my-sm-0" id="to-compare-page">
+                        <i class="fas fa-balance-scale"></i> <span
+                            class="badge badge-light">${fn:length(sessionScope.COMPARE.product)}</span>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -142,10 +147,25 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col col-sm-6">
-                                            <input type="checkbox" name="manufacture" value="Intel"> Intel
+                                            <c:choose>
+                                                <c:when test="${param.manufacture eq 'Intel'}">
+                                                    <input type="checkbox" name="manufacture" value="Intel"
+                                                           checked> Intel
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="checkbox" name="manufacture" value="Intel"> Intel
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                         <div class="col col-sm-6">
-                                            <input type="checkbox" name="manufacture" value="AMD"> AMD
+                                            <c:choose>
+                                                <c:when test="${param.manufacture eq 'AMD'}">
+                                                    <input type="checkbox" name="manufacture" value="AMD" checked> AMD
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="checkbox" name="manufacture" value="AMD"> AMD
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                         <div class="col col-sm-6">
                                             <input type="checkbox" name="manufacture" value="Others"> Khác
@@ -167,16 +187,20 @@
                                         <input type="checkbox" name="price" value="0-5000000"> 0 ₫ - 5.000.000 ₫
                                     </div>
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" name="price" value="5000000-10000000"> 5.000.000 ₫ - 10.000.000 ₫
+                                        <input type="checkbox" name="price" value="5000000-10000000"> 5.000.000 ₫ -
+                                                                                                      10.000.000 ₫
                                     </div>
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" name="price" value="10000000-20000000"> 10.000.000 ₫ - 20.000.000 ₫
+                                        <input type="checkbox" name="price" value="10000000-20000000"> 10.000.000 ₫ -
+                                                                                                       20.000.000 ₫
                                     </div>
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" name="price" value="20000000-30000000"> 20.000.000 ₫ - 30.000.000 ₫
+                                        <input type="checkbox" name="price" value="20000000-30000000"> 20.000.000 ₫ -
+                                                                                                       30.000.000 ₫
                                     </div>
                                     <div class="col col-sm-12">
-                                        <input type="checkbox" name="price" value="30000000-1000000000"> Trên 30.000.000 ₫
+                                        <input type="checkbox" name="price" value="30000000-1000000000"> Trên 30.000.000
+                                                                                                         ₫
                                     </div>
                                 </div>
                             </div>
@@ -251,7 +275,8 @@
                                         <c:forEach var="noOfCores" items="${noOfCoresList}">
                                             <c:if test="${not empty noOfCores}">
                                                 <div class="col col-sm-6">
-                                                    <input type="checkbox" name="no-of-cores" value="${noOfCores}"> ${noOfCores}
+                                                    <input type="checkbox" name="no-of-cores"
+                                                           value="${noOfCores}"> ${noOfCores}
                                                 </div>
                                             </c:if>
                                         </c:forEach>
@@ -285,20 +310,28 @@
                 <div class="col col-sm-6">
                     <div class="row">
                         <div class="col col-sm-12">
-                            <p class="text-light"><b>CPUs</b></p>
+                            <p class="text-light">
+                                <b>
+                                    <a class="text-light" href="/danh-sach-san-pham">CPUs</a>
+                                </b>
+                            </p>
                         </div>
                         <div class="col col-sm-12">
-                            <a class="text-light" href="#">Intel</a>
+                            <a class="text-light" href="/danh-sach-san-pham?manufacture=Intel">Intel</a>
                         </div>
                         <div class="col col-sm-12">
-                            <a class="text-light" href="#">AMD</a>
+                            <a class="text-light" href="/danh-sach-san-pham?manufacture=AMD">AMD</a>
                         </div>
                     </div>
                 </div>
                 <div class="col col-sm-6">
                     <div class="row">
                         <div class="col col-sm-12">
-                            <p class="text-light"><b>Info</b></p>
+                            <p class="text-light">
+                                <b>
+                                    <a class="text-light" href="#">Info</a>
+                                </b>
+                            </p>
                         </div>
                         <div class="col col-sm-12">
                             <a class="text-light" href="#">About Us</a>
