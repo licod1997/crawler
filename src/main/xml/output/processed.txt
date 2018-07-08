@@ -1,0 +1,678 @@
+Intel Xeon Platinum 8173M 
+Intel Xeon Gold 6154 
+Intel Core i9-7980XE 
+Intel Core i9-7960X 
+Intel Xeon Gold 6138 
+Intel Xeon E5-2679 v4 
+Intel Xeon Gold 6146 
+Intel Core i9-7940X 
+Intel Xeon Gold 6140 
+Intel Xeon E5-2697A v4 
+Intel Xeon E5-2699 v4 
+Intel Core i9-7920X 
+Intel Xeon E5-2696 v3 
+Intel Xeon W-2155 
+Intel Xeon E5-2699 v3 
+Intel Core i9-7900X 
+AMD Ryzen Threadripper 1950X
+Intel Xeon W-2195 
+Intel Xeon E5-2698 v4 
+Intel Xeon E5-2673 v4 
+Intel Xeon W-2150B 
+Intel Xeon E5-2697 v4 
+Intel Xeon E5-2697 v3 
+Intel Xeon E5-2696 v4 
+Intel Xeon E5-2690 v4 
+Intel Xeon E5-2698 v3 
+Intel Xeon Gold 6136 
+Intel Xeon E5-2695 v3 
+Intel Xeon E5-2695 v4 
+Intel Xeon Gold 6130 
+Intel Core i7-6950X 
+Intel Xeon E5-2687W v4 
+Intel Xeon E5-2680 v4 
+Intel Xeon W-2145 
+Intel Xeon E5-2689 v4 
+Intel Xeon Gold 6126 
+Intel Xeon Gold 6144 
+Intel Xeon E5-2686 v3 
+Intel Xeon E5-2690 v3 
+Intel Xeon E5-2683 v4 
+AMD EPYC 7501
+Intel Xeon E5-2680 v3 
+Intel Core i7-7820X 
+AMD EPYC 7401P
+Intel Core i7-7900X 
+AMD EPYC 7551
+Intel Xeon W-2140B 
+Intel Xeon D-2183IT 
+Intel Xeon E5-1681 v3 
+Intel Xeon Gold 5120T 
+AMD Ryzen Threadripper 1920X
+Intel Xeon Gold 6134 
+AMD EPYC 7351P
+Intel Xeon E5-2660 v4 
+Intel Xeon E5-2687W v3 
+Intel Core i7-6900K 
+Intel Xeon E5-2676 v3 
+Intel Xeon E5-2697 v2 
+Intel Xeon E5-2683 v3 
+Intel Core i7-8086K 
+Intel Xeon E5-1680 v4 
+AMD Ryzen 7 2700X
+Intel Xeon E5-2673 v3 
+Intel Xeon E5-2678 v3 
+Intel Xeon E5-2658 v4 
+Intel Xeon E5-2696 v2 
+Intel Xeon E5-1680 v3 
+Intel Xeon E5-2670 v3 
+Intel Xeon E5-2690 v2 
+Intel Xeon E5-2687W v2 
+Intel Xeon W-2135 
+Intel Xeon E5-1680 v2 
+Intel Xeon E5-2667 v4 
+Intel Xeon E5-2673 v2 
+Intel Xeon E5-2658 v3 
+Intel Xeon E5-1660 v4 
+Intel Xeon E5-2660 v3 
+Intel Xeon E5-2667 v2 
+Intel Xeon E5-2667 v3 
+Intel Xeon E5-2692 v2 
+Intel Core i7-8700K 
+Intel Core i7-5960X 
+Intel Xeon E5-2695 v2 
+Intel Xeon E5-2650 v4 
+Intel Xeon E5-2680 v2 
+Intel Xeon E5-4660 v3 
+Intel Xeon E5-4627 v4 
+Intel Xeon E-2186M 
+AMD Ryzen 7 1800X
+AMD Ryzen 7 2700
+AMD Ryzen 7 PRO 1700X
+Intel Xeon E5-2682 v4 
+Intel Xeon E5-2640 v4 
+Intel Core i7-8700 
+Intel Xeon Silver 4116 
+AMD Ryzen Threadripper 1900X
+Intel Xeon E5-2675 v3 
+Intel Xeon Gold 5120 
+Intel Xeon E5-2670 v2 
+Intel Xeon E5-2685 v3 
+Intel Xeon Gold 6128 
+Intel Xeon E5-2650 v3 
+AMD Ryzen 7 PRO 1700
+Intel Core i9-8950HK 
+Intel Xeon D-1567 
+AMD Ryzen 7 1700X
+Intel Xeon E5-2618L v4 
+Intel Xeon E5-2649 v3 
+Intel Core i7-7800X 
+Intel Xeon Silver 4114 
+AMD Ryzen 5 2600X
+Intel Xeon E5-1660 v3 
+Intel Xeon W-2133 
+Intel Xeon E5-2687W 
+Intel Core i7-6850K 
+Intel Xeon E-2176M 
+Intel Xeon E5-1650 v4 
+Intel Xeon E5-4627 v3 
+Intel Xeon E5-2658 v2 
+Intel Xeon E5-2640 v3 
+Intel Xeon E5-2650L v4 
+Intel Core i7-8850H 
+Intel Xeon E5-2663 v3 
+Intel Xeon E5-2690 
+Intel Xeon D-1587 
+Intel Xeon E5-2630 v4 
+Intel Core i7-4960X 
+Intel Xeon E5-2643 v3 
+AMD Ryzen 7 1700
+Intel Xeon E5-1660 v2 
+Intel Core i7-5930K 
+Intel Xeon E5-4669 v4 
+Intel Core i7-6800K 
+Intel Xeon E5-1650 v3 
+Intel Xeon E5-2643 v4 
+Intel Xeon E5-2689 
+AMD Ryzen 5 2600
+Intel Xeon E5-2650L v3 
+Intel Xeon E5-2648L v4 
+Intel Xeon E5-2660 v2 
+Intel Xeon E5-2628L v4 
+AMD Ryzen 5 1600X
+Intel Xeon E5-2650 v2 
+Intel Core i7-4930K 
+Intel Core i7-5820K 
+Intel Xeon E5-2630L v4 
+Intel Core i7-8700T 
+Intel Core i5-8600K 
+Intel Xeon E5-2630 v3 
+Intel Xeon E5-4640 v3 
+Intel Xeon E5-1650 v2 
+Intel Core i7-3970X 
+Intel Xeon E5-2680 
+Intel Core i7-3960X 
+Intel Core i7-8750H 
+Intel Xeon E5-2618L v3 
+Intel Xeon W-2125 
+Intel Xeon E5-1660 
+Intel Xeon E5-2643 v2 
+AMD Ryzen 5 1600
+Intel Xeon E5-4655 v3 
+Intel Core i7-7740X 
+AMD Ryzen 5 PRO 1600
+Intel Xeon E5-2670 
+Intel Core i5-8500 
+Intel Xeon E5-4650 
+Intel Core i7-7700K 
+Intel Core i5-8600 
+Intel Core i7-3930K 
+Intel Xeon E5-2628L v3 
+Intel Xeon Silver 4110 
+Intel Xeon E5-4650L 
+Intel Core i5-8400 
+Intel Xeon E5-2665 
+Intel Xeon E5-1650 
+Intel Xeon E3-1285 v6 
+Intel Xeon E5-2648L v3 
+Intel Xeon E3-1280 v6 
+Intel Xeon E5-2620 v4 
+Intel Xeon E5-2651 v2 
+Intel Xeon E3-1285L v4 
+Intel Core i7-4790K 
+Intel Xeon E3-1270 v6 
+Intel Core i7-6700K 
+Intel Xeon E5-2660 
+Intel Core i5-8600T 
+Intel Xeon E5-4648 v3 
+Intel Xeon Gold 5122 
+Intel Xeon D-1541 
+Intel Xeon E3-1275 v6 
+Intel Xeon E5-2629 v3 
+Intel Core i7-8809G 
+Intel Core i7-5775C 
+Intel Core i7-5950HQ 
+AMD Ryzen 5 PRO 1500
+Intel Xeon Silver 4109T 
+Intel Core i7-5775R 
+Intel Xeon W-2123 
+Intel Core i7-7700 
+AMD Opteron 6386 SE
+Intel Xeon E3-1585 v5 
+Intel Xeon E3-1575M v5 
+Intel Xeon E3-1585L v5 
+AMD EPYC 7251 8-Core
+Intel Xeon E3-1280 v5 
+Intel Xeon E3-1285 v4 
+Intel Xeon E3-1535M v6 
+Intel Xeon D-1540 
+Intel Xeon E5-4640 
+Intel Xeon E3-1515M v5 
+Intel Xeon E5-2637 v4 
+Intel Xeon E3-1545M v5 
+Intel Xeon E3-1245 v6 
+Intel Xeon E3-1240 v5 
+Intel Xeon E5-2630 v2 
+Intel Xeon E3-1275 v5 
+Intel Core i7-8705G 
+Intel Core i5-8500T 
+Intel Xeon E5-2667 
+Intel Xeon E3-1270 v5 
+Intel Xeon E5-1630 v4 
+Intel Xeon E3-1281 v3 
+Intel Xeon E5-1630 v3 
+Intel Xeon E3-1285 v3 
+Intel Xeon E3-1245 v5 
+AMD Ryzen 5 PRO 2400G
+Intel Xeon E3-1276 v3 
+Intel Core i7-4980HQ 
+AMD FX-9590 Eight-Core
+Intel Xeon E5-2450 
+Intel Core i7-7920HQ 
+AMD Ryzen 5 PRO 2400GE
+Intel Xeon E3-1240 v6 
+Intel Xeon E5-2650 
+Intel Xeon E3-1260L v5 
+Intel Xeon E3-1286L v3 
+AMD Ryzen 5 1500X
+Intel Xeon E5-2637 v3 
+Intel Core i7-4770K 
+AMD Opteron 6380
+Intel Xeon E3-1271 v3 
+Intel Xeon E5-2470 
+Intel Core i7-7820HK 
+Intel Xeon E3-1241 v3 
+Intel Xeon E3-1285L v3 
+Intel Core i7-6700 
+Intel Core i7-4790 
+Intel Xeon E5-2620 v3 
+Intel Xeon E5-1620 v4 
+Intel Xeon E3-1505M v6 
+Intel Xeon E3-1230 v6 
+Intel Xeon E5-2640 v2 
+Intel Core i7-4940MX 
+Intel Xeon E3-1286 v3 
+Intel Core i5-8400T 
+Intel Xeon E3-1246 v3 
+Intel Xeon E3-1270 v3 
+Intel Core i7-4771 
+Intel Xeon E3-1275 v3 
+Intel Core i7-4770R 
+Intel Core i7-995X 
+Intel Core i7-4770 
+AMD Opteron 6287 SE
+Intel Xeon E5-2630L v2 
+Intel Core i7-4960HQ 
+Intel Xeon E3-1230 v5 
+Intel Xeon E5-1620 v3 
+Intel Xeon E3-1290 V2 
+Intel Xeon D-1531 
+Intel Core i7-4820K 
+Intel Xeon E3-1280 v3 
+Intel Core i7-6770HQ 
+Intel Xeon E3-1240 v3 
+Intel Core i5-7640X 
+Intel Xeon E3-1231 v3 
+Intel Core i7-6920HQ 
+Intel Xeon E3-1245 v3 
+Intel Core i7-4790S 
+Intel Core i7-3770K 
+Intel Core i7-4930MX 
+Intel Xeon E5-2640 
+Intel Xeon E5-1620 v2 
+Intel Xeon E5-2658 
+Intel Xeon E3-1270 V2 
+Intel Xeon E5-2630L v3 
+AMD Ryzen 7 PRO 2700U
+AMD FX-9370 Eight-Core
+Intel Core i7-5850HQ 
+Intel Xeon E5-2637 v2 
+Intel Core i7-4910MQ 
+Intel Xeon E3-1280 V2 
+Intel Xeon E5-2440 v2 
+AMD Opteron 6376
+Intel Xeon E5-2628L v2 
+Intel Core i7-7820HQ 
+Intel Core i7-4870HQ 
+Intel Core i7-4770S 
+Intel Xeon E3-1275 V2 
+Intel Core i7-7700T 
+Intel Xeon E3-1230 v3 
+AMD Ryzen 5 2400G
+Intel Core i7-3940XM 
+Intel Core i7-3770 
+Intel Xeon E3-1535M v5 
+Intel Core i7-4860HQ 
+Intel Core i3-8350K 
+AMD Ryzen 5 PRO 2500U
+Intel Xeon W3690 
+Intel Xeon E5-2440 
+Intel Xeon E3-1240 V2 
+Intel Core i7-3920XM 
+Intel Core i5-7600K 
+Intel Core i7-6820HK 
+Intel Xeon E3-1245 V2 
+AMD Opteron 6282 SE
+Intel Core i5-8300H 
+Intel Xeon W3680 
+Intel Core i7-990X 
+Intel Xeon E5-1620 
+Intel Core i7-4790T 
+Intel Core i7-4900MQ 
+Intel Core i7-6700T 
+AMD FX-8370 Eight-Core
+AMD Opteron 6276
+Intel Core i7-3820 
+Intel Core i7-4850HQ 
+Intel Core i7-8650U 
+Intel Xeon X5690 
+Intel Core i7-6820EQ 
+Intel Xeon E5-2448L v2 
+AMD FX-8350 Eight-Core
+Intel Core i7-4770HQ 
+Intel Xeon E5-2623 v3 
+Intel Xeon E3-1505M v5 
+Intel Core i7-3770S 
+Intel Core i3-8300 
+Intel Core i7-7700HQ 
+Intel Xeon E5-2630 
+Intel Xeon E3-1230 V2 
+Intel Xeon E5-4617 
+Intel Xeon X5679 
+Intel Xeon E5-2430 v2 
+Intel Xeon E3-1275L v3 
+Intel Core i7-6700TE 
+Intel Core i7-980X 
+Intel Core i5-7600 
+Intel Core i7-3840QM 
+Intel Core i7-6820HQ 
+Intel Core i7-2700K 
+Intel Xeon E3-1265L v3 
+Intel Xeon E3-1290 
+Intel Xeon E3-1268L v5 
+Intel Core i7-980 
+Intel Xeon E5-2620 v2 
+Intel Xeon E5-2650L 
+Intel Core i7-4810MQ 
+Intel Xeon E5-2420 v2 
+Intel Core i7-4770T 
+Intel Xeon X5680 
+Intel Core i7-4760HQ 
+Intel Xeon Silver 4112 
+AMD Ryzen 5 2400GE
+Intel Core i7-4800MQ 
+Intel Xeon X5675 
+Intel Xeon E5-2643 
+Intel Xeon E3-1280 
+Intel Core i7-2600K 
+Intel Core i7-3820QM 
+AMD Ryzen 5 1400
+Intel Core i7-970 
+Intel Core i7-5700HQ 
+Intel Xeon E3-1275 
+Intel Core i7-3740QM 
+Intel Core i7-8550U 
+Intel Core i5-8350U 
+AMD Ryzen 3 PRO 1300
+Intel Xeon E3-1225 v6 
+Intel Core i7-4750HQ 
+Intel Xeon E5-2450L 
+Intel Xeon E3-1270 
+Intel Core i7-5700EQ 
+Intel Core i5-5675C 
+Intel Core i7-2600 
+Intel Core i7-3770T 
+Intel Xeon E5-2623 v4 
+Intel Core i7-5675C 
+Intel Xeon W3670 
+AMD Ryzen 3 PRO 2200
+Intel Core i7-6700HQ 
+Intel Core i5-7600T 
+Intel Xeon E5-4620 
+Intel Core i7-3720QM 
+Intel Core i3-8100 
+Intel Xeon D-1559 
+Intel Core i5-5675R 
+Intel Core i5-7500 
+Intel Core i7-4722HQ 
+Intel Core i5-6600K 
+Intel Xeon E3-1245 
+Intel Xeon E3-1220 v6 
+AMD FX-8320 Eight-Core
+Intel Core i7-4720HQ 
+Intel Core i3-8300T 
+Intel Xeon E5-2630L 
+Intel Core i7-4710MQ 
+Intel Xeon E3-1240 
+Intel Xeon D-1528 
+Intel Xeon X5670 
+Intel Xeon E5-2620 
+Intel Core i7-4860EQ 
+Intel Xeon E3-1230 
+Intel Xeon E3-1268L v3 
+Intel Xeon E3-1225 v5 
+AMD Opteron 6328
+AMD FX-8370E Eight-Core
+Intel Xeon E3-1240L v5 
+Intel Core i5-4690K 
+Intel Xeon E3-1265L V2 
+Intel Xeon E5-2608L v3 
+Intel Core i5-6600 
+AMD FX-8310 Eight-Core
+Intel Core i7-4710HQ 
+Intel Core i7-4700HQ 
+AMD Ryzen 3 PRO 2200GE
+Intel Xeon E3-1220 v5 
+Intel Xeon D-1537 
+AMD FX-8300 Eight-Core
+Intel Core i7-4700MQ 
+Intel Core i5-7440HQ 
+Intel Xeon E3-1235 
+AMD Ryzen 5 2500U
+Intel Core i5-8250U 
+Intel Core i5-4690 
+Intel Xeon X5660 
+Intel Core i5-4670K 
+AMD FX-8150 Eight-Core
+Intel Core i7-4785T 
+AMD Ryzen 7 2700U
+Intel Core i7-3630QM 
+AMD FX-8320E Eight-Core
+Intel Xeon E3-1226 v3 
+Intel Core i7-4712HQ 
+Intel Xeon E3-1240L v3 
+AMD Opteron 6366 HE
+AMD Ryzen 3 1300X
+Intel Core i7-4702HQ 
+Intel Core i7-3610QM 
+Intel Core i5-5575R 
+Intel Xeon X5650 
+Intel Core i5-4670 
+Intel Xeon E5-1410 v2 
+Intel Core i5-4670K CPT 
+Intel Core i5-4690S 
+Intel Core i5-7400 
+Intel Core i7-3615QM 
+AMD Ryzen 3 2200G
+Intel Core i7-3615QE 
+AMD Opteron 6238
+Intel Xeon E5-1410 
+Intel Core i5-6600T 
+Intel Core i7-4765T 
+Intel Core i5-4590 
+Intel Xeon E5-2430L 
+Intel Xeon E5-1607 v4 
+Intel Core i5-6500 
+Intel Xeon E3-1230L v3 
+AMD Ryzen 3 PRO 2300U
+Intel Xeon E3-1225 v3 
+Intel Core i7-4700EQ 
+Intel Core i5-3570K 
+Intel Core i7-2960XM 
+Intel Core i7-4712MQ 
+Intel Xeon E5-2420 
+Intel Core i7-4702MQ 
+Intel Core i5-7500T 
+Intel Core i5-6402P 
+Intel Core i5-4570 
+Intel Xeon X5687 
+Intel Core i5-3570 
+Intel Xeon E3-1505L v5 
+Intel Core i7-2600S 
+Intel Xeon E3-1220 v3 
+AMD Ryzen 3 PRO 1200
+Intel Core i7-2920XM 
+Intel Core i7-2860QM 
+Intel Xeon W-2102 
+Intel Core i5-4590S 
+AMD FX-6350 Six-Core
+Intel Xeon D-1521 
+Intel Core i7-3632QM 
+Intel Xeon E5649 
+Intel Xeon E5-1607 v3 
+AMD FX-6330 Six-Core
+Intel Xeon X5677 
+Intel Core i5-3550 
+Intel Xeon E5-2609 v4 
+Intel Xeon E5-2430 
+Intel Core i5-3550S 
+Intel Xeon E3-1225 V2 
+Intel Core i5-7300HQ 
+Intel Xeon L5639 
+Intel Core i7-3612QM 
+AMD Ryzen 3 1200
+AMD Opteron 6220
+Intel Core i5-6440HQ 
+Intel Core i5-4570S 
+Intel Core i7-2840QM 
+Intel Core i5-6400 
+AMD Opteron 6272
+Intel Core i5-4570R 
+Intel Core i5-4460 
+Intel Core i5-2550K 
+Intel Core i5-3570S 
+Intel Xeon E3-1220 V2 
+Intel Core i5-3470 
+Intel Core i7-3635QM 
+AMD Opteron 4284
+Intel Core i7-985 
+Intel Core i7-2820QM 
+Intel Core i3-7350K 
+Intel Xeon E5-2430L v2 
+Intel Core i5-3475S 
+Intel Core i7-4770TE 
+AMD FX-8120 Eight-Core
+Intel Core i5-6500TE 
+Intel Core i7-2760QM 
+Intel Core i7-3612QE 
+Intel Core i3-7320 
+Intel Xeon E3-1260L 
+Intel Core i7-7567U 
+Intel Core i5-3450 
+Intel Xeon E5645 
+Intel Core i5-4440 
+Intel Core i5-2500K 
+Intel Xeon E3-1235L v5 
+Intel Core i5-4690T 
+Intel Core i7-3610QE 
+Intel Core i3-7300 
+Intel Core i5-7400T 
+Intel Xeon X5672 
+Intel Core i5-4670S 
+Intel Xeon W3580 
+AMD Opteron 4280
+Intel Core i7-6822EQ 
+Intel Xeon E5-1603 v4 
+Intel Xeon L5640 
+Intel Core i5-4460S 
+AMD Opteron 3380
+AMD FX-6300 Six-Core
+Intel Core i5-3470S 
+Intel Core i5-2500 
+Intel Core i5-4430 
+Intel Core i5-6500T 
+AMD FX-6130 Six-Core
+Intel Core i5-4670T 
+AMD PRO A12-9800
+Intel Core i5-3450S 
+Intel Core i5-4440S 
+Intel Xeon W5590 
+Intel Xeon E5-1607 v2 
+Intel Xeon E5-1603 v3 
+AMD Opteron 6174
+Intel Core i5-3350P 
+Intel Core i7-7660U 
+Intel Core i7-975 
+AMD Opteron 4334
+Intel Core i5-2450P 
+AMD FX-6200 Six-Core
+Intel Core i7-2720QM 
+Intel Xeon W3570 
+Intel Core i5-6300HQ 
+Intel Core i5-3340 
+Intel Xeon E3-1220 
+AMD PRO A12-8870
+Intel Core i3-6320 
+Intel Xeon E3-1265L 
+AMD FX-8100 Eight-Core
+Intel Xeon X5647 
+AMD Opteron 6234
+Intel Core i5-7360U 
+Intel Core i5-2400 
+Intel Xeon W3565 
+Intel Xeon E5-2609 v3 
+AMD Opteron 3365
+Intel Core i5-3330 
+Intel Xeon E3-1225 
+Intel Core i5-4430S 
+Intel Core i7-2670QM 
+Intel Core i5-3570T 
+Intel Core i7-7560U 
+Intel Xeon E5-1607 
+Intel Core i7-965 
+AMD FX-8140 Eight-Core
+Intel Core i3-6300 
+AMD PRO A10-8850B
+Intel Xeon W5580 
+Intel Core i7-960 
+Intel Core i5-3340S 
+Intel Atom C3955 
+Intel Core i3-7100 
+Intel Core i5-3335S 
+Intel Core i5-6440EQ 
+AMD Opteron 6212
+Intel Core i7-2710QE 
+Intel Core i5-2320 
+Intel Xeon D-1520 
+AMD Phenom II X6 1100T
+AMD FX-6120 Six-Core
+AMD A10-7890K
+Intel Pentium Gold G5600 
+Intel Core i5-7260U 
+AMD PRO A10-8770
+Intel Xeon W3550 
+AMD PRO A10-9700
+Intel Core i5-2380P 
+Intel Xeon X5570 
+Intel Core i5-3330S 
+Intel Xeon X3480 
+Intel Core i5-7287U 
+AMD PRO A10-8750B
+Intel Core i7-6567U 
+AMD A10-8850
+AMD Opteron 4332 HE
+Intel Core i7-880 
+Intel Core i5-6400T 
+Intel Core i3-4370 
+AMD Phenom II X6 1090T
+AMD Athlon X4 880K
+Intel Core i5-4590T 
+Intel Core i7-950 
+Intel Xeon L5638 
+Intel Core i7-2675QM 
+Intel Core i7-7600U 
+AMD A12-9800
+Intel Core i7-2630QM 
+Intel Xeon E5-1603 
+Intel Core i5-2310 
+Intel Core i3-6100 
+AMD A10-7870K
+AMD A10-7850K APU
+Intel Xeon W3540 
+Intel Xeon E5-2603 v4 
+AMD A8-8650
+AMD A10 PRO-7850B APU
+AMD A10-9700
+Intel Core i7-2635QM 
+Intel Core i3-4360 
+AMD PRO A8-8650B
+AMD Athlon X4 860K
+Intel Xeon Bronze 3104 
+Intel Core i7-875K 
+AMD Athlon X4 845
+Intel Core i3-6098P 
+AMD Opteron 4386
+AMD A10 PRO-7800B APU
+Intel Xeon X5550 
+Intel Xeon X5560 
+AMD FX-6100 Six-Core
+Intel Core i3-7300T 
+Intel Core i7-2715QE 
+Intel Core i7-940 
+Intel Xeon W3530 
+Intel Core i7-870 
+AMD Phenom II X6 1075T
+AMD Opteron 6164 HE
+Intel Core i5-2300 
+AMD FX-4350 Quad-Core
+Intel Pentium Gold G5400 
+Intel Core i3-8130U 
+Intel Xeon D-1518 
+AMD PRO A8-9600
+AMD Athlon X4 870K
+Intel Core i5-2500S 
+AMD Athlon X4 950
+AMD Opteron 3280
+Intel Xeon E5640 
+Intel Pentium Gold G5500 
+Intel Core i3-6300T 

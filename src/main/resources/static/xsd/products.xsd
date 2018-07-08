@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0"
+           targetNamespace="http://www.pickyourcpu.vn/schema/products"
+           xmlns="http://www.pickyourcpu.vn/schema/products"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="product" type="product"/>
+
+    <xs:element name="products">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="product" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="shop" type="shop"/>
+
+    <xs:element name="shops">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="shop" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="product">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="name" type="xs:string" form="qualified"/>
+            <xs:element name="benchmark" type="xs:integer" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="socket" type="xs:string" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="clockspeed" type="xs:double" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="turbospeed" type="xs:double" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="TDP" type="xs:double" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="noOfCores" type="xs:integer" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="coresDescription" type="xs:string" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="description" type="xs:string" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="shops" form="qualified" nillable="true" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="shop">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long" form="qualified" nillable="true" minOccurs="0"/>
+            <xs:element name="url" type="xs:string" form="qualified"/>
+            <xs:element name="price" type="xs:positiveInteger" form="qualified" nillable="true" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
+
