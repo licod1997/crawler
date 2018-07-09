@@ -51,7 +51,7 @@ body {
   z-index: 1000;
   display: block;
 }
-#nav-1 #to-login-page {
+#nav-1 #to-login-page, #nav-1 #logout, #nav-1 #to-admin-page {
   font-size: 13px;
   padding: 5px 11px;
 }

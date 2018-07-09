@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     List<Product> findTop10ByNameLike( String name );
 
+    void deleteAll();
+
+    @Transactional
     default List<Product> saveListProducts( List<Product> products ) {
         List<Product> result = new ArrayList<>();
 

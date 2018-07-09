@@ -29,7 +29,7 @@ public class Product {
     private String coresDescription;
     @Column( name = "description" )
     private String description;
-    @OneToMany( mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, targetEntity = Shop.class )
+    @OneToMany( mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Shop.class )
     private List<Shop> shops;
 
     public Product() {

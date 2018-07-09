@@ -80,15 +80,25 @@ _( document ).ready( function () {
                 method: 'GET',
                 async: false,
                 success: function ( xhr ) {
-                    _( '.result' ).html().innerHTML = 'Đã tìm thấy ' + xhr.responseText + ' kết quả';
-                    if ( !flag ) {
-                        _( '.loader' ).html().style.display = 'block';
-                        _( '.loader-text' ).html().style.display = 'block';
+                    var response = xhr.responseText;
+                    if ( response != 'Stopped' ) {
+                        _( '.result' ).html().innerHTML = 'Đã tìm thấy ' + xhr.responseText + ' kết quả';
+                        if ( !flag ) {
+                            _( '.loader' ).html().style.display = 'block';
+                            _( '.loader-text' ).html().style.display = 'block';
+                            _( '#start' ).addClass( 'disabled' );
+                            _( '#stop' ).removeClass( 'disabled' );
+                        }
+                        flag = true;
+                    } else {
+                        _( '.loader' ).html().style.display = 'none';
+                        _( '.loader-text' ).html().style.display = 'none';
+                        _( '#start' ).removeClass( 'disabled' );
+                        _( '#stop' ).addClass( 'disabled' );
+                        clearInterval( x );
                     }
-                    flag = true;
-
                 },
-                error: function () {
+                error: function ( xhr ) {
                     clearInterval( x );
                 }
             } );
@@ -98,6 +108,8 @@ _( document ).ready( function () {
     function startThread() {
         _( '.loader' ).html().style.display = 'block';
         _( '.loader-text' ).html().style.display = 'block';
+        _( '#start' ).addClass( 'disabled' );
+        _( '#stop' ).removeClass( 'disabled' );
         _.ajax( {
             url: 'http://localhost:8080/quan-tri-vien/bat-dau-crawl',
             method: 'GET',
@@ -126,15 +138,18 @@ _( document ).ready( function () {
         clearInterval( x );
         _( '.loader' ).html().style.display = 'none';
         _( '.loader-text' ).html().style.display = 'none';
-        _( '.result' ).html().innerHTML = '';
+        _( '#start' ).removeClass( 'disabled' );
+        _( '#stop' ).addClass( 'disabled' );
     }
 
     _( '#start' ).on( 'click', function () {
+        if (this.classList.contains('disabled')) return;
         startThread();
         checkThread();
     } );
 
     _( '#stop' ).on( 'click', function () {
+        if (this.classList.contains('disabled')) return;
         stopThread();
     } )
 } );

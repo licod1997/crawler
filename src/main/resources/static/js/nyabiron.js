@@ -32,27 +32,33 @@ function _( selector ) {
     };
 
     _.ajax = function ( obj ) {
-        var url = obj.url;
-        var method = obj.method;
-        var data = obj.data;
-        var async = obj.async;
-        var error = obj.error;
-        var headers = obj.headers;
-        var success = obj.success;
+        var x;
+        try {
+            var url = obj.url;
+            var method = obj.method;
+            var data = obj.data;
+            var async = obj.async;
+            var error = obj.error;
+            var headers = obj.headers;
+            var success = obj.success;
 
-        var xhr = new XMLHttpRequest();
-        xhr.open( method, url, async );
-        for ( var name in headers ) {
-            xhr.setRequestHeader( name, headers[name] );
-        }
-        xhr.onload = function () {
-            if ( xhr.status === 200 ) {
-                success( xhr );
-            } else {
-                error( xhr );
+            var xhr = new XMLHttpRequest();
+            xhr.open( method, url, async );
+            for ( var name in headers ) {
+                xhr.setRequestHeader( name, headers[name] );
             }
+            xhr.onload = function () {
+                if ( xhr.status === 200 ) {
+                    success( xhr );
+                } else {
+                    error( xhr );
+                    x = xhr;
+                }
+            }
+            xhr.send( data );
+        } catch (e) {
+            error(x);
         }
-        xhr.send( data );
     }
 
     return self;

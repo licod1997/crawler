@@ -126,7 +126,7 @@
                 <p class="result"></p>
                 <button type="button" id="start" class="btn btn-success">Bắt đầu cào dữ liệu <i class="fas fa-play"></i>
                 </button>
-                <button type="button" id="stop" class="btn btn-main-red">Dừng bộ cào dữ liệu <i class="fas fa-stop"></i>
+                <button type="button" id="stop" class="btn btn-main-red disabled">Dừng bộ cào dữ liệu <i class="fas fa-stop"></i>
                 </button>
             </div>
         </div>

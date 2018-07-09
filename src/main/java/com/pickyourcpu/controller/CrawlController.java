@@ -44,6 +44,6 @@ public class CrawlController {
         if ( thread != null && thread.isAlive() ) {
             return ResponseEntity.ok( crawler.getResult() );
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok("Stopped");
     }
 }

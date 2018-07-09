@@ -87,6 +87,8 @@ _( document ).ready( function () {
 
                         }
                     } );
+                } else {
+                    alert( 'Chỉ có thể so sánh tối đa 4 sản phẩm. Vui lòng xóa bớt sản phẩm trong phần so sánh' );
                 }
             } );
         }

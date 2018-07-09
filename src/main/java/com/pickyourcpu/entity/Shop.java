@@ -17,7 +17,7 @@ public class Shop {
     @Column( name = "price", precision = 19, scale = 0 )
     private BigDecimal price;
     @JsonIgnore
-    @ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, targetEntity = Product.class )
+    @ManyToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Product.class )
     @JoinColumn( name = "product_id", referencedColumnName = "id" )
     private Product product;
 

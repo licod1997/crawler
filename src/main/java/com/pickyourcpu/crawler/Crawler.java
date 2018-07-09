@@ -213,6 +213,7 @@ public class Crawler implements Runnable {
                             Product product = parseCPUBenchmarkDetail( isDetail );
                             list.add( product );
                             this.result = list.size();
+                            if (list.size() == 50) break;
                         }
                         //end
                         inProductTag = false;
@@ -552,12 +553,12 @@ public class Crawler implements Runnable {
 //        productList.addAll( parseCPUBenchmark( preProcessCPUBenchmark( URIResolver( URLEnum.CPUBENCHMARK_2.getUrl() ) ) ) );
 
         List<Product> productShopList = new ArrayList<>();
-
         while ( !breakCondition ) {
             String html2 = URIResolver( URLEnum.PHONGVU.getUrl() + "?p=" + i++ );
             InputStream is2 = preprocessPhongVu( html2 );
             productShopList.addAll( parsePhongVu( is2 ) );
         }
+        productShopList.addAll( parseLongBinh( preprocessLongBinh( URLEnum.LONGBINH.getUrl() ) ) );
 
         for ( Product product : productList ) {
             for ( Product tempProduct : productShopList ) {
@@ -580,6 +581,7 @@ public class Crawler implements Runnable {
         }
 
         if ( validateXML( transformXML( EntityToJAXB.parseListProductToProductsJAXB( productShopList ) ), EntityToJAXB.parseListProductToProductsJAXB( productShopList ) ) ) {
+            productRepository.deleteAll();
             productRepository.saveListProducts( productList );
         }
     }
